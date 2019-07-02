@@ -1,3 +1,1 @@
 # Sporen Zoeker
-
-## Project setup
