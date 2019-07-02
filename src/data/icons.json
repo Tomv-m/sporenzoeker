@@ -1,0 +1,54 @@
+[
+  {
+    "id": "bed",
+    "category": "Overnachten",
+    "data": [
+      {
+        "coordinates": [4.883504, 51.5709754],
+        "info": {
+          "name": "BB Boeren Burgers Buitenlui",
+          "address": "Schoolstraat 27, 5124 RM Molenschot",
+          "tel": "06 27303383",
+          "web": null
+        }
+      },
+      {
+        "coordinates": [4.9367081, 51.5422116],
+        "info": {
+          "name": "BB ‘in Gils’",
+          "address": "Oranjestraat 31, 5126 BL Gilze",
+          "tel": "0161 451755",
+          "web": "ingils.nl"
+        }
+      }
+    ]
+  },
+  {
+    "id": "tent",
+    "category": "Overnachten",
+    "data": [
+
+    ]
+  },
+  {
+    "id": "klaver",
+    "category": "Aanbod Recreatie",
+    "data": [
+
+    ]
+  },
+  {
+    "id": "ster",
+    "category": "Aanbod Recreatie",
+    "data": [
+
+    ]
+  },
+  {
+    "id": "bestek",
+    "category": "Eten en drinken",
+    "data": [
+
+    ]
+  }
+]

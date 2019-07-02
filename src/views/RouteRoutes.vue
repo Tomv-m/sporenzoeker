@@ -2,33 +2,48 @@
   <div v-if="route">
     <Routes
       v-if="route.group" 
-      :routes="route.group"
-      :type="route.type"
+      :group="route"
     />
-    <h1 v-if="!route.group">Doei</h1>
+    <Route
+      v-else
+      :route="route"
+      :prevRoute="from"
+    />
   </div>
-  <div v-else>
-    <p>Deze pagina zit niet op de route</p>
-  </div>
+  <NotFound v-else/>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Routes from '@/components/subViews/Routes'
+import Route from '@/components/subViews/Route'
+import NotFound from '@/components/NotFound'
+// JSON
+import routes from '@/data/routes'
 
 export default {
   name: 'RouteRoutes',
   components: {
-    Routes
+    Routes,
+    Route,
+    NotFound
+  },
+  data() {
+    return {
+      from: null,
+      routes
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+      next((vm) => {
+          vm.from = from
+      })
   },
   computed: {
-    ...mapState(['routes']),
     route() {
       if (this.routes.length > 0) {
-        const route = this.routes.find(route => {
+        return this.routes.find(route => {
           return route.slug === this.$route.params.slug
         })
-        return route
       }
       return null
     }

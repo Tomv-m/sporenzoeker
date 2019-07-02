@@ -21,20 +21,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.main-header {
-  margin-top: 72px;
-  .wrapper {
-    display: flex;
-    align-items: center;
-    min-height: 50px;
-  }
-  .right-content {
-    margin-left: auto;
-    .icon-button {
-      margin-left: 22px;
-    }
-  }
-}
-</style>

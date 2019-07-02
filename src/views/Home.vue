@@ -1,5 +1,8 @@
 <template>
   <div class="home">
+    <Headful
+      title="Sporen Zoeker | Home"
+    />
     <MainHeader>
       <button
         class="icon-button"
@@ -42,10 +45,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import MainHeader from '@/components/Header'
 import Item from '@/components/Item'
-
+// JSON
+import routes from '@/data/routes'
 // Icons
 import LoopIcon from '@/components/icons/LoopIcon'
 import FietsIcon from '@/components/icons/FietsIcon'
@@ -64,11 +67,11 @@ export default {
     return {
       filter: null,
       search: '',
-      searched: null
+      searched: null,
+      routes
     }
   },
   computed: {
-    ...mapState(['routes']),
     filtered() {
       let routes = this.routes
       if (this.filter) {

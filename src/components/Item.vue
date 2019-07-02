@@ -1,18 +1,18 @@
 <template>
   <router-link
-    class="route"
+    class="route-item route-item-normal"
     :to="route.slug"
     :title="route.title"
   >
     <div
-      class="route-image"
-      :style="{ backgroundImage: route.background }"
+      class="route-item-image"
+      :style="{ 'background-image': getImage(route.image) }"
     />
-    <div class="route-info">
-      <div class="route-info-top">
+    <div class="route-item-info">
+      <div class="route-item-info-top">
         <h2>{{ route.title }}</h2>
       </div>
-      <div class="route-info-bottom">
+      <div class="route-item-info-bottom">
         <div class="content">
           <span>{{ route.subTitle }}</span>
           <div class="divider"></div>
@@ -50,6 +50,11 @@ export default {
       } else {
         return ''
       }
+    }
+  },
+  methods: {
+    getImage(img) {
+      return 'url('+require('@/assets/images/items/'+img)+')'
     }
   }
 }
