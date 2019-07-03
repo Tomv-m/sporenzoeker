@@ -20,6 +20,42 @@
           "tel": "0161 451755",
           "web": "ingils.nl"
         }
+      },
+      {
+        "coordinates": [4.884570, 51.547451],
+        "info": {
+          "name": "BB Beukenhof",
+          "address": "Bavelseweg 127, 5124 PX Molenschot",
+          "tel": "06 55821331",
+          "web": null
+        }
+      },
+      {
+        "coordinates": [4.929730, 51.537560],
+        "info": {
+          "name": "Hoeve de Lakenvelder",
+          "address": "Horst 32, 5126 BX Gilze",
+          "tel": "0161 225642",
+          "web": "hoevedelakenvelder.nl"
+        }
+      },
+      {
+        "coordinates": [4.945362, 51.553688],
+        "info": {
+          "name": "Van der Valk Hotel Gilze-Tilburg",
+          "address": "Klein Zwitserland 8, 5126 TA Gilze",
+          "tel": "0161 454444",
+          "web": "hotelgilzetilburg.nl"
+        }
+      },
+      {
+        "coordinates": [4.983500, 51.521890],
+        "info": {
+          "name": "Doeboerderij De Vergulde Hand",
+          "address": "Vijfhuizenbaan 33a, 5133 NH Riel",
+          "tel": "06 22986026",
+          "web": "doeboerderijdeverguldehand.nl"
+        }
       }
     ]
   },
@@ -27,28 +63,456 @@
     "id": "tent",
     "category": "Overnachten",
     "data": [
-
+      {
+        "coordinates": [4.920700, 51.536750],
+        "info": {
+          "name": "Het Gilzer Lindehof",
+          "address": "Brakken 12, 5126 AX Gilze",
+          "tel": "0161 456880",
+          "web": null
+        }
+      },
+      {
+        "coordinates": [4.898410, 51.611000],
+        "info": {
+          "name": "Natuurkampeerterrein en BB de Duiventoren",
+          "address": "Steenovensebaan 27, 4849 RD Dorst",
+          "tel": "06 41666655",
+          "web": "deduiventoren.nl"
+        }
+      },
+      {
+        "coordinates": [4.888990, 51.610020],
+        "info": {
+          "name": "Recreatiepark ‘t Haasje",
+          "address": "Vijf Eikenweg 45, 4849 PX Dorst",
+          "tel": "0161 411626",
+          "web": "haasjeoosterhout.nl"
+        }
+      },
+      {
+        "coordinates": [4.907412, 51.581726],
+        "info": {
+          "name": "Camping d’n Mastendol / natuurspeeltuin d’n Boom",
+          "address": "Oosterhoutseweg 7, 5121 RE Rijen",
+          "tel": "0161 222664",
+          "web": "mastendol.nl"
+        }
+      },
+      {
+        "coordinates": [4.896915, 51.577871],
+        "info": {
+          "name": "Linberg Park Recreatiecentrum",
+          "address": "Molenschotsebaan 21, 5124 NG Molenschot",
+          "tel": "0161 411516",
+          "web": "linbergpark.nl"
+        }
+      },
+      {
+        "coordinates": [4.896678, 51.575540],
+        "info": {
+          "name": "Camping Heidelust",
+          "address": "Heideweg 4, 5124 NH Molenschot",
+          "tel": "06 13964703",
+          "web": "campingcentrumheidelust.nl"
+        }
+      },
+      {
+        "coordinates": [4.884733, 51.548561],
+        "info": {
+          "name": "Minicamping Wilgenweide",
+          "address": "Bavelseweg 128, 5124 PZ Molenschot",
+          "tel": "06 53366731",
+          "web": "wilgenweide.nl"
+        }
+      },
+      {
+        "coordinates": [4.860796, 51.537111],
+        "info": {
+          "name": "Natuurcamping Schouteveld",
+          "address": "Schouteveld 1, 5126 NB Gilze",
+          "tel": "0161 432076",
+          "web": "schouteveld.nl"
+        }
+      },
+      {
+        "coordinates": [4.890505, 51.489926],
+        "info": {
+          "name": "RCN Vakantiepark de Flaasbloem",
+          "address": "Flaasdijk 1, 4861 RC Chaam",
+          "tel": " 0161 491654",
+          "web": "flaasbloem.nl"
+        }
+      },
+      {
+        "coordinates": [4.950391, 51.493138],
+        "info": {
+          "name": "Recreatiepark ‘t zand",
+          "address": "Maastrichtsebaan 1, 5131 NZ Alphen",
+          "tel": "013 5081746",
+          "web": "tzand.nl"
+        }
+      },
+      {
+        "coordinates": [4.960959, 51.453312],
+        "info": {
+          "name": "Boerderijcamping De hardel Hoeve",
+          "address": "Oordeelsestraat 17, 5111 PB Baarle Nassau",
+          "tel": "06 10586788",
+          "web": "hardelhoeve.nl/camping"
+        }
+      },
+      {
+        "coordinates": [4.983500, 51.521889],
+        "info": {
+          "name": "Doeboerderij De Vergulde Hand",
+          "address": "Vijfhuizenbaan 33a, 5133 NH Riel",
+          "tel": "06 22986026",
+          "web": "doeboerderijdeverguldehand.nl"
+        }
+      }
     ]
   },
   {
     "id": "klaver",
     "category": "Aanbod Recreatie",
     "data": [
-
+      {
+        "coordinates": [4.881259, 51.563546],
+        "info": {
+          "name": "Pluktuin en zorgboerderij Amélior",
+          "address": "Raakeindse Kerkweg 61, 5124 RG Molenschot",
+          "tel": " 06 18354207",
+          "web": "ameliorzorgboerderij.nl"
+        }
+      },
+      {
+        "coordinates": [4.949754, 51.553951],
+        "info": {
+          "name": "Speelbos Gilze",
+          "address": "Nerhoven 12, 5126 TB Gilze",
+          "tel": "0161 455806",
+          "web": "Nerhoven 12, 5126 TB Gilze"
+        }
+      },
+      {
+        "coordinates": [4.895104, 51.555417],
+        "info": {
+          "name": "Van der Avoird Trayplant",
+          "address": "Rimpelaar 3, 5124 RB Molenschot",
+          "tel": "0161 451427",
+          "web": "trayplant.nl"
+        }
+      },
+      {
+        "coordinates": [4.933858, 51.548790],
+        "info": {
+          "name": "Siertuin den Overkaent",
+          "address": "Strijp 31, 5126 WS Gilze",
+          "tel": "06 51246280",
+          "web": "denoverkaent.nl"
+        }
+      }
     ]
   },
   {
     "id": "ster",
     "category": "Aanbod Recreatie",
     "data": [
-
+      {
+        "coordinates": [4.922572, 51.575062],
+        "info": {
+          "name": "Traditiekamer vliegbasis Gilze Rijen",
+          "address": "Rijksweg 121, 5121 RD Rijen",
+          "tel": "0161 496104",
+          "web": null
+        }
+      },
+      {
+        "coordinates": [4.927753, 51.559247],
+        "info": {
+          "name": "Stichting Koningklijke Historische Vlucht",
+          "address": "Rijksweg 121, 5121 RD Rijen",
+          "tel": "06 14788434",
+          "web": "skhv.nl"
+        }
+      },
+      {
+        "coordinates": [4.873243, 51.548061],
+        "info": {
+          "name": "Golfclub Princenbosch",
+          "address": "Bavelseweg 153, 5124 PX Molenschot",
+          "tel": "0161 431811",
+          "web": "princenbosch.nl"
+        }
+      },
+      {
+        "coordinates": [4.944270, 51.553169],
+        "info": {
+          "name": "Jack’s Casino Gilze-Rijen",
+          "address": "Klein Zwitserland 8, 5126 TA Gilze",
+          "tel": "0161 454444",
+          "web": "jackscasino.nl"
+        }
+      },
+      {
+        "coordinates": [4.942743, 51.547586],
+        "info": {
+          "name": "Museum Dé Wascht en Strékt",
+          "address": "Nieuwstraat 96, 5126 CG Gilze",
+          "tel": "0161 451863",
+          "web": "waschtenstrekt.nl"
+        }
+      },
+      {
+        "coordinates": [4.948486, 51.547635],
+        "info": {
+          "name": "Margriet Brand Chocola en het Chocoladerijk",
+          "address": "Den Bulk 1, 5126 PW Gilze",
+          "tel": "0161 454798",
+          "web": "magrietchocola.nl"
+        }
+      },
+      {
+        "coordinates": [4.941491, 51.544794],
+        "info": {
+          "name": "Van Boxel Tweewielerspecialist",
+          "address": "Nieuwstraat 33, 5126 CB Gilze",
+          "tel": "0161 454799",
+          "web": "vanboxelgilze.nl"
+        }
+      },
+      {
+        "coordinates": [4.941276, 51.543526],
+        "info": {
+          "name": "Heemkring Molenheide",
+          "address": "Nieuwstraat 22, 5126 CE Gilze",
+          "tel": "0161 222512",
+          "web": "heemkringmolenheide.nl"
+        }
+      },
+      {
+        "coordinates": [4.939508, 51.542912],
+        "info": {
+          "name": "Servies ‘Toen en nu’",
+          "address": "Abdis van Thornstraat 8, 5126 BJ Gilze",
+          "tel": "06 23249007",
+          "web": "serviestoenennu.nl"
+        }
+      },
+      {
+        "coordinates": [4.961056, 51.545873],
+        "info": {
+          "name": "Geerts huifkarrenritten / mensportcentrum",
+          "address": "Tilburgsebaan 30, 5126 PH Gilze",
+          "tel": "0161 451509",
+          "web": "geertgilze.nl"
+        }
+      },
+      {
+        "coordinates": [4.9669757, 51.5453609],
+        "info": {
+          "name": "Speelboerderij de Vossenberg",
+          "address": "Tilburgseweg 42, 5126 PH Gilze",
+          "tel": "0161 456686",
+          "web": "devossenberg.net"
+        }
+      },
+      {
+        "coordinates": [4.994652, 51.549325],
+        "info": {
+          "name": "Prinse d’eau Golf",
+          "address": "Gilzerbaan 400, 5032 VC Tilburg",
+          "tel": "013 4628200",
+          "web": "prisedeau-golf.nl"
+        }
+      },
+      {
+        "coordinates": [4.990378, 51.549076],
+        "info": {
+          "name": "Sky Ballonvaarten",
+          "address": "Gilzerbaan 495, 5032 VD Tilburg",
+          "tel": "06 20414447",
+          "web": "skyballonvaarten.nl"
+        }
+      },
+      {
+        "coordinates": [4.936226, 51.522362],
+        "info": {
+          "name": "The Lodge",
+          "address": "Alphensebaan 14, 5126 PR Gilze",
+          "tel": "0161 451869",
+          "web": "lodge.nl"
+        }
+      },
+      {
+        "coordinates": [4.9418085, 51.5202598],
+        "info": {
+          "name": "Aangespannen Dag Gilze",
+          "address": "Alphenseweg 40, 5126 AD Gilze",
+          "tel": "0161 455200",
+          "web": "aangespannendag.nl"
+        }
+      }
     ]
   },
   {
     "id": "bestek",
     "category": "Eten en drinken",
     "data": [
-
+      {
+        "coordinates": [4.941896, 51.545211],
+        "info": {
+          "name": "Irish Pub The Banner",
+          "address": "Nieuwstraat 52, 5126 CE Gilze",
+          "tel": "0161 453461",
+          "web": "irishpubthebanner.com"
+        }
+      },
+      {
+        "coordinates": [4.93656, 51.54388],
+        "info": {
+          "name": "Sportcafé Gilze",
+          "address": "Kapittelstraat 15, 5126 HB Gilze",
+          "tel": "0161 455000",
+          "web": "sportcafegilze.nl"
+        }
+      },
+      {
+        "coordinates": [4.940171, 51.541757],
+        "info": {
+          "name": "De Huyskamer",
+          "address": "Bisschop de Vetplein 9, 5126 CA Gilze",
+          "tel": "06 5265523",
+          "web": "dehuyskamergilze.nl"
+        }
+      },
+      {
+        "coordinates": [4.9447681, 51.541571],
+        "info": {
+          "name": "Samen in Gilze",
+          "address": "Heuvel 1, 5126 CN Gilze",
+          "tel": "0161 745061",
+          "web": "sameningilze.nl"
+        }
+      },
+      {
+        "coordinates": [4.9441928, 51.5350093],
+        "info": {
+          "name": "Café-restaurant de Hooikar",
+          "address": "Alphenseweg 14a, 5126 PN Gilze",
+          "tel": "0161 451387",
+          "web": "hooikar.nl"
+        }
+      },
+      {
+        "coordinates": [4.917900, 51.540862],
+        "info": {
+          "name": "Eetcafé d'n Brooy",
+          "address": "Chaamseweg 21, 5126 NE Gilze",
+          "tel": " 0161 451548",
+          "web": "brooy.nl"
+        }
+      },
+      {
+        "coordinates": [4.919084, 51.588847],
+        "info": {
+          "name": "Wijnbar Op12",
+          "address": "Hoofdstraat 12, 5121 JE Rijen",
+          "tel": "0161 780120",
+          "web": "wijnbarop12.nl"
+        }
+      },
+      {
+        "coordinates": [4.918855, 51.588218],
+        "info": {
+          "name": "Smaak Lokaal",
+          "address": "Wilhelminaplein 26, 5121 ES Rijen",
+          "tel": "0161 226837",
+          "web": "smaakrijen.nl"
+        }
+      },
+      {
+        "coordinates": [4.926661, 51.576814],
+        "info": {
+          "name": "Café-eeterij ‘t Vermaeck",
+          "address": "Rijksweg 115, 5121 RD Rijen",
+          "tel": "0161 240716",
+          "web": "hetvermaeck.nl"
+        }
+      },
+      {
+        "coordinates": [4.894070, 51.572673],
+        "info": {
+          "name": "Lutske’s Theetuin",
+          "address": "Broekstraat 72, 5124 NK Molenschot",
+          "tel": "06 50455610",
+          "web": "lutskestheetuin.nl"
+        }
+      },
+      {
+        "coordinates": [4.8826759, 51.5733116],
+        "info": {
+          "name": "Herberg De Drie Linden",
+          "address": "Broekstraat 1, 5124 NJ Molenschot",
+          "tel": "0161 411333",
+          "web": "3linden.nl"
+        }
+      },
+      {
+        "coordinates": [4.8824456, 51.572753],
+        "info": {
+          "name": "Café-feesterij ‘t Engeltje",
+          "address": "Schoolstraat 3, 5124 RM Molenschot",
+          "tel": "0161 411892",
+          "web": "t.engeltje.com"
+        }
+      },
+      {
+        "coordinates": [4.93889, 51.62667],
+        "info": {
+          "name": "Den Hespel",
+          "address": "Hespelpad 9, 5107 NT Dongen",
+          "tel": "0162 749000",
+          "web": "denhespel.nl"
+        }
+      },
+      {
+        "coordinates": [4.8995115, 51.6103838],
+        "info": {
+          "name": "Uitspanning Jacobushoeve",
+          "address": "Steenovensebaan 29, 4849 RD Dorst",
+          "tel": "06 10881409",
+          "web": "jacobushoeve.com"
+        }
+      },
+      {
+        "coordinates": [4.8671434, 51.5507487],
+        "info": {
+          "name": "Brasserie Schutterslust",
+          "address": "Bavelseweg 165, 5124 PX Molenschot",
+          "tel": "0161 431227",
+          "web": "schutterslust.nl"
+        }
+      },
+      {
+        "coordinates": [4.8834254, 51.5172638],
+        "info": {
+          "name": "De Steengroeve",
+          "address": "Industriestraat 24, 4861 PR Chaam",
+          "tel": "0161 491343",
+          "web": "steengroeve.nl"
+        }
+      },
+      {
+        "coordinates": [4.8353135, 51.5011183],
+        "info": {
+          "name": "Boerderijterras Bij Toontje Schoen",
+          "address": "Ginderdoorstraat 4, 4861 CC Chaam",
+          "tel": "0161 496610",
+          "web": "bijtoontjeschoen.nl"
+        }
+      }
     ]
   }
 ]

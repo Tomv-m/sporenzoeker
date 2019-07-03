@@ -152,6 +152,39 @@ export default {
     ]
 
     this.map.on('load', () => {
+      // Add route
+      this.map.addLayer({
+        "id": "route",
+        "type": "line",
+        "source": {
+          "type": "geojson",
+          "data": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "LineString",
+              "coordinates": this.route.coordinates
+            }
+          }
+        },
+        "layout": {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        "paint": {
+          "line-color": "#008D36",
+          "line-width": 6
+        }
+      })
+      // zoom to route
+      const coordinates = this.route.coordinates
+      const bounds = coordinates.reduce((bounds, coord) => {
+        return bounds.extend(coord)
+      }, new mapbox.LngLatBounds(coordinates[0], coordinates[0]))
+      this.map.fitBounds(bounds, {
+        zoom: 13
+      })
+      
       // Add icons
       icons.forEach(icon => {
         this.map.loadImage(icon.img, (err, res) =>{
@@ -197,38 +230,6 @@ export default {
         })
       })
 
-      // Add route
-      this.map.addLayer({
-        "id": "route",
-        "type": "line",
-        "source": {
-          "type": "geojson",
-          "data": {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-              "type": "LineString",
-              "coordinates": this.route.coordinates
-            }
-          }
-        },
-        "layout": {
-          "line-join": "round",
-          "line-cap": "round"
-        },
-        "paint": {
-          "line-color": "#008D36",
-          "line-width": 6
-        }
-      })
-      // zoom to route
-      const coordinates = this.route.coordinates
-      const bounds = coordinates.reduce((bounds, coord) => {
-        return bounds.extend(coord)
-      }, new mapbox.LngLatBounds(coordinates[0], coordinates[0]))
-      this.map.fitBounds(bounds, {
-        zoom: 13
-      })
     })
   }
 }
