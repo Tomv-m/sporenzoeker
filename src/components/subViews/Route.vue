@@ -182,7 +182,7 @@ export default {
         return bounds.extend(coord)
       }, new mapbox.LngLatBounds(coordinates[0], coordinates[0]))
       this.map.fitBounds(bounds, {
-        zoom: 13
+        zoom: this.route.zoom
       })
       
       // Add icons

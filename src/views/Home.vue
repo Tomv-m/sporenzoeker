@@ -30,14 +30,14 @@
         <Item
           v-for="route in searched"
           :route="route"
-          :key="route.id"
+          :key="route.slug"
         />
       </div>
       <div class="route-list" v-else>
         <Item
           v-for="route in filtered"
           :route="route"
-          :key="route.id"
+          :key="route.slug"
         />
       </div>
     </div>

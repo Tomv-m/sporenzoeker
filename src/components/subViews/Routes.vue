@@ -19,7 +19,7 @@
         <Item
           v-for="route in group.group"
           :route="{ ...route, type }"
-          :key="route.id"
+          :key="route.slug"
         />
       </div>
     </div>
