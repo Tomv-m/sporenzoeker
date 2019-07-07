@@ -23,20 +23,13 @@
     <div class="wrapper">
       <form @submit.prevent="searchItems" class="search-wrapper">
         <input type="text" v-model="search" placeholder="Zoek jouw spoor..">
-        <button class="search-button" type="submit">
+        <button class="search-button">
           <SearchIcon/>
         </button>
       </form>
-      <div class="route-list" v-if="searched">
+      <div class="route-list">
         <Item
-          v-for="route in searched"
-          :route="route"
-          :key="route.slug"
-        />
-      </div>
-      <div class="route-list" v-else>
-        <Item
-          v-for="route in filtered"
+          v-for="route in allRoutes"
           :route="route"
           :key="route.slug"
         />
@@ -71,7 +64,6 @@ export default {
     return {
       filter: null,
       search: '',
-      searched: null,
       routes
     }
   },
@@ -84,6 +76,15 @@ export default {
         })
       }
       return routes
+    },
+    allRoutes() {
+      if (this.search.trim() === '') {
+        return this.routes
+      } else {
+        return this.filtered.filter(route => {
+          return route.title.toLowerCase().includes(this.search.trim().toLowerCase())
+        })
+      }
     }
   },
   methods: {
@@ -95,13 +96,8 @@ export default {
       }
     },
     searchItems() {
-      if (this.search.trim() !== '') {
-        const search = this.search.trim().toLowerCase()
-        this.searched = this.filtered.filter(route => {
-          return route.title.toLowerCase().includes(search)
-        })
-      } else {
-        this.searched = null
+      if (this.allRoutes <! 0) {
+        this.search = ''
       }
     }
   }
