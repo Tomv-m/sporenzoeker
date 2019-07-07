@@ -2,6 +2,7 @@
   <div class="home">
     <Headful
       title="Sporen Zoeker | Home"
+      description="Ontdek met Sporenzoeker de Toerlezjoere-regio tussen Breda, Tilburg en de Belgische grens. Je vind hier onze favoriete fiets- en wandelroutes. Ervaar onderweg de omgeving, ontdek verrassende uitstapjes en geniet van een lekkere hap tussendoor of een heerlijk diner. Liever zonder telefoon erop uit? Verken het gebied met de brochure verkrijgbaar bij de leden van Toerlezjoere, deze zijn te vinden op de plattegrond en herkenbaar aan het schildje op de gevel. Beleef Toerlezjoere, ’t goeie van Brabant…"
     />
     <MainHeader>
       <button
@@ -41,11 +42,13 @@
         />
       </div>
     </div>
+    <MainFooter />
   </div>
 </template>
 
 <script>
 import MainHeader from '@/components/Header'
+import MainFooter from '@/components/Footer'
 import Item from '@/components/Item'
 // JSON
 import routes from '@/data/routes'
@@ -58,6 +61,7 @@ export default {
   name: 'home',
   components: {
     MainHeader,
+    MainFooter,
     LoopIcon,
     FietsIcon,
     SearchIcon,

@@ -6,7 +6,7 @@
   >
     <div
       class="route-item-image"
-      :style="{ 'background-image': getImage(route.image) }"
+      :style="{ 'background-image': 'url(' + getImage(route.file) + ')' }"
     />
     <div class="route-item-info">
       <div class="route-item-info-top">
@@ -14,9 +14,9 @@
       </div>
       <div class="route-item-info-bottom">
         <div class="content">
-          <span>{{ route.subTitle }}</span>
-          <div class="divider"></div>
-          <span>{{ visualType }}</span>
+          <span v-if="route.subTitle">{{ route.subTitle }}</span>
+          <div v-if="route.subTitle" class="divider"></div>
+          <span>{{ type }}</span>
         </div>
         <div class="content-icon">
           <FietsIcon v-if="route.type === 'fietsen'" />
@@ -41,20 +41,18 @@ export default {
     route: Object
   },
   computed: {
-    visualType() {
-      const type = this.route.type
-      if (type === 'lopen') {
-        return 'Wandelen'
-      } else if (type === 'fietsen') {
-        return 'Fietsen'
+    type() {
+      if (this.route.group) {
+        const groupType = this.route.type === 'lopen' ? 'wandelingen' : 'fietsroutes'
+        return this.route.group.length + ' ' + groupType
       } else {
-        return ''
+        return this.route.type === 'lopen' ? 'Wandelen' : 'Fietsen'
       }
     }
   },
   methods: {
     getImage(img) {
-      return 'url('+require('@/assets/images/items/'+img)+')'
+      return require(`@/assets/images/items/${img}.jpg`)
     }
   }
 }

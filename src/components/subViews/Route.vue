@@ -50,33 +50,37 @@
         </div>
       </div>
     </div>
-    <Modal v-if="selectedIcon" @close="selectedIcon = null">
-      <div class="modal-info">
-        <header>
-          <h2>{{ selectedIcon.name }}</h2>
-          <span>{{ selectedIcon.category }}</span>
-        </header>
-        <ul class="contact">
-          <li>
-            <span class="contact-info">Adres </span>{{ selectedIcon.address }}
-          </li>
-          <li v-if="selectedIcon.tel !== 'null'">
-            <span class="contact-info">Telefoon </span>{{ selectedIcon.tel }}
-          </li>
-          <li v-if="selectedIcon.web !== 'null'">
-            <span class="contact-info">Website </span><a target="_blank" :href="url(selectedIcon.web)">{{ selectedIcon.web }}</a>
-          </li>
+    <transition name="fade">
+      <Modal v-if="selectedIcon" @close="selectedIcon = null">
+        <div class="modal-info">
+          <header>
+            <h2>{{ selectedIcon.name }}</h2>
+            <span>{{ selectedIcon.category }}</span>
+          </header>
+          <ul class="contact">
+            <li>
+              <span class="contact-info">Adres </span>{{ selectedIcon.address }}
+            </li>
+            <li v-if="selectedIcon.tel">
+              <span class="contact-info">Telefoon </span>{{ selectedIcon.tel }}
+            </li>
+            <li v-if="selectedIcon.web">
+              <span class="contact-info">Website </span><a target="_blank" :href="url(selectedIcon.web)">{{ selectedIcon.web }}</a>
+            </li>
+          </ul>
+        </div>
+      </Modal>
+    </transition>
+    <transition name="fade">
+      <Modal v-if="attributionter" @close="attributionter = false">
+        <ul class="map-footer">
+          <li><a target="_blank" href="https://toerlezjoere.nl">&copy; Toerlezjoere</a></li>
+          <li><a target="_blank" href="https://www.mapbox.com/about/maps/">&copy; Mapbox</a></li>
+          <li><a target="_blank" href="http://www.openstreetmap.org/about/">&copy; OpenStreetMap</a></li>
+          <li><a target="_blank" href="https://www.mapbox.com/map-feedback/"><b>Improve this map</b></a></li>
         </ul>
-      </div>
-    </Modal>
-    <Modal v-if="attributionter" @close="attributionter = false">
-      <ul class="map-footer">
-        <li><a target="_blank" href="https://toerlezjoere.nl">&copy; Toerlezjoere</a></li>
-        <li><a target="_blank" href="https://www.mapbox.com/about/maps/">&copy; Mapbox</a></li>
-        <li><a target="_blank" href="http://www.openstreetmap.org/about/">&copy; OpenStreetMap</a></li>
-        <li><a target="_blank" href="https://www.mapbox.com/map-feedback/"><b>Improve this map</b></a></li>
-      </ul>
-    </Modal>
+      </Modal>
+    </transition>
     <div id="map"></div>
   </div>
 </template>
@@ -111,8 +115,11 @@ export default {
         return ''
       }
     },
+    routeData() {
+      return require(`@/data/routes/${this.route.file}.json`)
+    },
     image() {
-      return require('@/assets/images/items/' + this.route.image)
+      return require(`@/assets/images/items/${this.route.file}.jpg`)
     }
   },
   data() {
@@ -131,28 +138,9 @@ export default {
         url = 'http://'+url+'/'
       }
       return url
-    }
-  },
-  mounted() {
-    mapbox.accessToken = this.accessToken
-    this.map = new mapbox.Map({
-      container: 'map',
-      style: this.mapStyle,
-      attributionControl: false,
-      center: [4.9443857, 51.5416528],
-      zoom: 10
-    })
-
-    const icons = [
-      { name: 'bed', img: require('@/assets/icons/bed.png') },
-      { name: 'bestek', img: require('@/assets/icons/bestek.png') },
-      { name: 'klaver', img: require('@/assets/icons/klaver.png') },
-      { name: 'ster', img: require('@/assets/icons/ster.png') },
-      { name: 'tent', img: require('@/assets/icons/tent.png') }
-    ]
-
-    this.map.on('load', () => {
-      // Add route
+    },
+    setRoute() {
+      const coordinates = this.routeData.coordinates
       this.map.addLayer({
         "id": "route",
         "type": "line",
@@ -163,7 +151,7 @@ export default {
             "properties": {},
             "geometry": {
               "type": "LineString",
-              "coordinates": this.route.coordinates
+              "coordinates": coordinates
             }
           }
         },
@@ -177,59 +165,60 @@ export default {
         }
       })
       // zoom to route
-      const coordinates = this.route.coordinates
       const bounds = coordinates.reduce((bounds, coord) => {
         return bounds.extend(coord)
       }, new mapbox.LngLatBounds(coordinates[0], coordinates[0]))
       this.map.fitBounds(bounds, {
-        zoom: this.route.zoom
+        zoom: this.routeData.zoom
       })
-      
-      // Add icons
-      icons.forEach(icon => {
-        this.map.loadImage(icon.img, (err, res) =>{
-          this.map.addImage(icon.name, res)
+    },
+    setBikePoints() {
+      if (this.routeData.bikePoints && this.route.type === 'fietsen') {
+      //   this.routeData.bikePoints.forEach(id => {
+      //     const point = this.bikePointsData.find(point => point.id = id)
+      //     if (point) {
+      //       console.log('Hoi ja hor daar is die' + point.coordinates)
+      //     }
+      //   })
+        this.routeData.bikePoints.forEach(point => {
+          let el = document.createElement('div');
+          el.className = 'bike-point'
+          el.innerHTML = point.name
+          new mapbox.Marker(el)
+            .setLngLat(point.coordinates)
+            .addTo(this.map)
         })
-      })
+      }
+    },
+    setIcons() {
       this.iconsData.forEach(section => {
-        const geojson = {
-          "id": section.id,
-          "type": "symbol",
-          "source": {
-            "type": "geojson",
-            "data": {
-              "type": "FeatureCollection",
-              "features": []
-            }
-          },
-          "layout": {
-            "icon-image": section.id,
-            "icon-size": 0.28
-          }
-        }
-        section.data.forEach(marker => {
-          geojson.source.data.features.push({
-            "type": "Feature",
-            "properties": marker.info,
-            "geometry": {
-              "type": "Point",
-              "coordinates": marker.coordinates
-            }
+        section.data.forEach(icon => {
+          let el = document.createElement('div')
+          el.className = `marker marker-${section.id}`
+          el.addEventListener('click', () => {
+            this.selectedIcon = { ...icon.info, category: section.category }
           })
-        })
-        this.map.addLayer(geojson)
-
-        this.map.on('click', section.id, e => {
-          this.selectedIcon = { ...e.features[0].properties, category: section.category }
-        })
-        this.map.on('mouseenter', section.id, () => {
-          this.map.getCanvas().style.cursor = 'pointer'
-        })
-        this.map.on('mouseleave', section.id, () => {
-          this.map.getCanvas().style.cursor = ''
+          new mapbox.Marker(el)
+            .setLngLat(icon.coordinates)
+            .addTo(this.map)
         })
       })
+    }
+  },
+  mounted() {
+    mapbox.accessToken = this.accessToken
+    this.map = new mapbox.Map({
+      container: 'map',
+      style: this.mapStyle,
+      attributionControl: false,
+      center: [4.9443857, 51.5416528],
+      zoom: 10
+    })
 
+    this.map.on('load', () => {
+      this.setRoute()
+      this.setBikePoints()
+      this.setIcons()
     })
   }
 }

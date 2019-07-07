@@ -93,17 +93,42 @@ input {
     }
   }
 }
-.main-header {
-  margin-top: 72px;
-  .wrapper {
-    display: flex;
-    align-items: center;
-    min-height: 50px;
+.main {
+  &-header {
+    margin-top: 72px;
+    .wrapper {
+      display: flex;
+      align-items: center;
+      min-height: 50px;
+    }
+    .right-content {
+      margin-left: auto;
+      .icon-button {
+        margin-left: 22px;
+      }
+    }
   }
-  .right-content {
-    margin-left: auto;
-    .icon-button {
-      margin-left: 22px;
+  &-footer {
+    text-align: center;
+    opacity: .45;
+    margin: 24px 0;
+    &-logo {
+      .icon-color {
+        fill: $primary-color;
+      }
+      svg {
+        width: 35%;
+      }
+    }
+    &-info {
+      font-size: 12px;
+      margin-top: 18px;
+      .divider {
+        background: $primary-light-color;
+      }
+      a {
+        text-decoration: underline;
+      }
     }
   }
 }
@@ -230,6 +255,16 @@ input {
       background-size: cover;
       border-radius: 10px;
       margin-bottom: 6px;
+      &::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        border-radius: 10px;
+        background: rgba($primary-color, .1);
+        background: linear-gradient(transparent, rgba($primary-color, .45))
+      }
       h1 {
         position: absolute;
         color: $white;
@@ -345,6 +380,42 @@ input {
         }
       }
     }
+  }
+}
+.bike-point {
+  background: $white;
+  width: 26px;
+  height: 26px;
+  line-height: 28px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 50%;
+  border: 3.5px solid $accent-color;
+  color: $accent-color;
+  padding: 0 1px 1px 0;
+}
+.marker {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  z-index: 1;
+  background-size: cover;
+  background-repeat: no-repeat;
+  &-ster {
+    background-image: url('./assets/images/icons/ster.png');
+  }
+  &-bestek {
+    background-image: url('./assets/images/icons/bestek.png');
+  }
+  &-klaver {
+    background-image: url('./assets/images/icons/klaver.png');
+  }
+  &-bed {
+    background-image: url('./assets/images/icons/bed.png');
+  }
+  &-tent {
+    background-image: url('./assets/images/icons/tent.png');
   }
 }
 .map-footer {

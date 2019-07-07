@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Logo from './Logo'
+import Logo from './icons/Logo'
 
 export default {
   name: 'MainHeader',

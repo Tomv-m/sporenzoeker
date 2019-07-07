@@ -13,7 +13,7 @@
         >
           <h1>{{ group.title }}</h1>
         </div>
-        <span>{{ group.subTitle }}</span>
+        <span v-if="group.subTitle">{{ group.subTitle }}</span>
       </div>
       <div class="route-list">
         <Item
@@ -23,17 +23,20 @@
         />
       </div>
     </div>
+    <MainFooter />
   </div>
 </template>
 
 <script>
 import MainHeader from '@/components/Header'
+import MainFooter from '@/components/Footer'
 import Item from '@/components/Item'
 
 export default {
   name: 'Routes',
   components: {
     MainHeader,
+    MainFooter,
     Item
   },
   props: {
@@ -44,7 +47,7 @@ export default {
       return this.group.type
     },
     image() {
-      return require('@/assets/images/groups/' + this.group.image)
+      return require(`@/assets/images/groups/${this.group.file}.jpg`)
     }
   }
 }
