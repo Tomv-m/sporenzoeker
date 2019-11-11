@@ -18,6 +18,7 @@
       <div class="wrapper">
         <div class="route-page-actions">
           <router-link
+            v-if="this.$route.params.slug !== 'toerlezjoeren-in-de-baronie'"
             :to="prevRoute ? prevRoute : '/'"
             class="route-page-button" 
           >

@@ -75,11 +75,12 @@ export default {
           return route.type === this.filter
         })
       }
+      console.log(routes)
       return routes
     },
     allRoutes() {
       if (this.search.trim() === '') {
-        return this.routes
+        return this.filtered
       } else {
         return this.filtered.filter(route => {
           return route.title.toLowerCase().includes(this.search.trim().toLowerCase())
