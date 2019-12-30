@@ -8,9 +8,9 @@
       "group": null
    },
    {
-      "slug": "toerlezjoeren-in-de-baronie",
+      "slug": "toer-de-baronie",
       "file": "baronie",
-      "title": "Toerlezjoeren in de Baronie",
+      "title": "Toer de Baronie",
       "subTitle": "59.6 km",
       "type": "fietsen",
       "group": null
@@ -40,58 +40,6 @@
             "file": "dodendraadroute",
             "title": "Dodendraadroute",
             "subTitle": "34.2 km"
-         }
-      ]
-   },
-   {
-      "slug": "boomkikkerpad",
-      "file": "boomkikkerpad",
-      "title": "Boomkikkerpad",
-      "subTitle": "- km",
-      "type": "lopen",
-      "zoom": 12,
-      "group": null,
-      "coordinates": []
-   },
-   {
-      "slug": "wandeling-oosterheide-en-boswachterij-dorst",
-      "file": "oosterheide",
-      "title": "Wandeling Oosterheide en Boswachterij Dorst",
-      "subTitle": "- km",
-      "type": "lopen",
-      "zoom": 12,
-      "group": null,
-      "coordinates": []
-   },
-   {
-      "slug": "ommetjes",
-      "file": "ommetje_blok_broek",
-      "title": "Ommetjes",
-      "type": "lopen",
-      "group": [
-         {
-            "slug": "ommetjes/ommetje-blok-en-broek",
-            "image": "ommetje_blok_broek.jpg",
-            "title": "Ommetje Blok en Broek",
-            "subTitle": "1",
-            "zoom": 12,
-            "coordinates": []
-         },
-         {
-            "slug": "ommetjes/ommetje-oosterijk-alphen",
-            "image": "ommetje_alphen.jpg",
-            "title": "Ommetje Oosterijk - Alphen",
-            "subTitle": "2",
-            "zoom": 12,
-            "coordinates": []
-         },
-         {
-            "slug": "ommetjes/ommetje-schuurkerkroute-chaam",
-            "image": "ommetje_chaam.jpg",
-            "title": "Ommetje Schuurkerkroute - Chaam",
-            "subTitle": "3",
-            "zoom": 12,
-            "coordinates": []
          }
       ]
    }

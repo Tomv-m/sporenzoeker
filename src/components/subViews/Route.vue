@@ -18,14 +18,31 @@
       <div class="wrapper">
         <div class="route-page-actions">
           <router-link
-            v-if="this.$route.params.slug !== 'toerlezjoeren-in-de-baronie'"
             :to="prevRoute ? prevRoute : '/'"
-            class="route-page-button" 
+            class="route-page-button"
           >
             Terug naar routes
           </router-link>
-          <!-- TODO:
-          <button class="route-page-button" >Mijn locatie</button> -->
+          <button
+            v-if="showUserLocationBtn"
+            class="route-page-button"
+            @click="locateUser"
+          >
+            Mijn locatie
+          </button>
+        </div>
+        <div class="route-filter">
+          <div class="filter-wrapper">
+            <button
+              v-for="(category, index) in categories"
+              :key="index"
+              @click="selectCategory(index)"
+              class="route-filter-item"
+              :class="{ selected: index === selectedCategory }"
+            >
+              {{category}}
+            </button>
+          </div>
         </div>
         <div class="route-item route-item-small" :title="route.title">
           <div
@@ -130,6 +147,17 @@ export default {
       mapStyle: 'mapbox://styles/mapbox/outdoors-v10',
       attributionter: false,
       selectedIcon: null,
+      userPosition: null,
+      userMarker: null,
+      showUserLocationBtn: false,
+      selectedCategory: 0,
+      categoryMarkers: [],
+      categories: [
+        'Alles',
+        'Overnachten',
+        'Aanbod Recreatie',
+        'Eten en drinken'
+      ],
       iconsData
     }
   },
@@ -173,14 +201,34 @@ export default {
         zoom: this.routeData.zoom
       })
     },
+    locateUser() {
+      window.navigator.geolocation.getCurrentPosition(pos => {
+        this.userPosition = [pos.coords.longitude, pos.coords.latitude]
+        this.showUserPoint()
+        this.map.flyTo({
+          center: this.userPosition,
+          zoom: 14,
+          essential: true
+        });
+      }, err => {
+        if (err.code == err.PERMISSION_DENIED) {
+          this.showUserLocationBtn = false
+        }
+      })
+    },
+    showUserPoint() {
+      if (this.userMarker === null) {
+        let el = document.createElement('div')
+        el.className = 'user-point'
+        this.userMarker = new mapbox.Marker(el)
+          .setLngLat(this.userPosition)
+          .addTo(this.map)
+      } else {
+        this.userMarker.setLngLat(this.userPosition)
+      }
+    },
     setBikePoints() {
       if (this.routeData.bikePoints && this.route.type === 'fietsen') {
-      //   this.routeData.bikePoints.forEach(id => {
-      //     const point = this.bikePointsData.find(point => point.id = id)
-      //     if (point) {
-      //       console.log('Hoi ja hor daar is die' + point.coordinates)
-      //     }
-      //   })
         this.routeData.bikePoints.forEach(point => {
           let el = document.createElement('div');
           el.className = 'bike-point'
@@ -202,11 +250,37 @@ export default {
           new mapbox.Marker(el)
             .setLngLat(icon.coordinates)
             .addTo(this.map)
+          this.categoryMarkers.push({ element: el, category: section.category })
         })
+      })
+    },
+    selectCategory(index) {
+      this.selectedCategory = index
+      const category = this.categories[index]
+      
+      this.categoryMarkers.forEach(marker => {
+        if (marker.category === category || category === 'Alles') {
+          marker.element.style.display = 'block'
+        } else {
+          marker.element.style.display = 'none'
+        }
       })
     }
   },
   mounted() {
+    if (window.navigator.geolocation) {
+      this.showUserLocationBtn = true
+
+      window.navigator.geolocation.getCurrentPosition(pos => {
+        this.userPosition = [pos.coords.longitude, pos.coords.latitude]
+        this.showUserPoint()
+      }, err => {
+        if (err.code == err.PERMISSION_DENIED) {
+          this.showUserLocationBtn = false
+        }
+      })
+    }
+    
     mapbox.accessToken = this.accessToken
     this.map = new mapbox.Map({
       container: 'map',

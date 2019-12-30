@@ -75,7 +75,6 @@ export default {
           return route.type === this.filter
         })
       }
-      console.log(routes)
       return routes
     },
     allRoutes() {
