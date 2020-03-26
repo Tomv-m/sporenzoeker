@@ -1,7 +1,7 @@
 <template>
   <div class="routes">
     <Headful
-      :title="'Sporen Zoeker | ' + group.title"
+      :title="'Sporenzoeker | ' + group.title"
       :image="image"
     />
     <MainHeader />

@@ -1,7 +1,7 @@
 <template>
   <div class="route-page">
     <Headful
-      :title="'Sporen Zoeker | ' + route.title"
+      :title="'Sporenzoeker | ' + route.title"
       :image="image"
     />
     <header class="main-header">
@@ -30,19 +30,6 @@
           >
             Mijn locatie
           </button>
-        </div>
-        <div class="route-filter">
-          <div class="filter-wrapper">
-            <button
-              v-for="(category, index) in categories"
-              :key="index"
-              @click="selectCategory(index)"
-              class="route-filter-item"
-              :class="{ selected: index === selectedCategory }"
-            >
-              {{category}}
-            </button>
-          </div>
         </div>
         <div class="route-item route-item-small" :title="route.title">
           <div
@@ -110,6 +97,12 @@ import LoopIcon from '@/components/icons/LoopIcon'
 import Modal from '@/components/Modal'
 // JSON
 import iconsData from '@/data/icons'
+// Icons
+import ster from '@/assets/images/icons/ster.png';
+import bestek from '@/assets/images/icons/bestek.png';
+import klaver from '@/assets/images/icons/klaver.png';
+import bed from '@/assets/images/icons/bed.png';
+import tent from '@/assets/images/icons/tent.png';
 
 export default {
   name: 'Route',
@@ -150,13 +143,12 @@ export default {
       userPosition: null,
       userMarker: null,
       showUserLocationBtn: false,
-      selectedCategory: 0,
-      categoryMarkers: [],
-      categories: [
-        'Alles',
-        'Overnachten',
-        'Aanbod Recreatie',
-        'Eten en drinken'
+      iconImages: [
+        { img: ster, name: 'ster' },
+        { img: bestek, name: 'bestek' },
+        { img: klaver, name: 'klaver' },
+        { img: bed, name: 'bed' },
+        { img: tent, name: 'tent' },
       ],
       iconsData
     }
@@ -169,6 +161,9 @@ export default {
       return url
     },
     setRoute() {
+      if (this.route.type === 'fietsen' && this.routeData.bikePoints) {
+        this.setBikePoints()
+      }
       const coordinates = this.routeData.coordinates
       this.map.addLayer({
         "id": "route",
@@ -201,6 +196,16 @@ export default {
         zoom: this.routeData.zoom
       })
     },
+    setBikePoints() {
+      this.routeData.bikePoints.forEach(point => {
+        let el = document.createElement('div');
+        el.className = 'bike-point'
+        el.innerHTML = point.name
+        new mapbox.Marker(el)
+          .setLngLat(point.coordinates)
+          .addTo(this.map)
+      })
+    },
     locateUser() {
       window.navigator.geolocation.getCurrentPosition(pos => {
         this.userPosition = [pos.coords.longitude, pos.coords.latitude]
@@ -227,42 +232,60 @@ export default {
         this.userMarker.setLngLat(this.userPosition)
       }
     },
-    setBikePoints() {
-      if (this.routeData.bikePoints && this.route.type === 'fietsen') {
-        this.routeData.bikePoints.forEach(point => {
-          let el = document.createElement('div');
-          el.className = 'bike-point'
-          el.innerHTML = point.name
-          new mapbox.Marker(el)
-            .setLngLat(point.coordinates)
-            .addTo(this.map)
+    convertIconsToGeojson(icons) {
+      let allIcons = []
+      icons.forEach(sec => {
+        const secIcons = sec.data.map(icon => {
+          return {
+            'type': 'Feature',
+            'properties': {
+              'category': sec.category,
+              'icon': sec.subcategory,
+              'info': icon.info
+            },
+            'geometry': {
+              'type': 'Point',
+              'coordinates': icon.coordinates
+            }
+          }
         })
+        allIcons = [...allIcons, ...secIcons]
+      })
+      return {
+        'type': 'FeatureCollection',
+        'features': allIcons
       }
     },
     setIcons() {
-      this.iconsData.forEach(section => {
-        section.data.forEach(icon => {
-          let el = document.createElement('div')
-          el.className = `marker marker-${section.id}`
-          el.addEventListener('click', () => {
-            this.selectedIcon = { ...icon.info, category: section.category }
-          })
-          new mapbox.Marker(el)
-            .setLngLat(icon.coordinates)
-            .addTo(this.map)
-          this.categoryMarkers.push({ element: el, category: section.category })
-        })
+      this.iconImages.forEach(img => this.addImage(img))
+      this.map.addSource('places', {
+        type: 'geojson',
+        data: this.convertIconsToGeojson(this.iconsData)
+      })
+      this.map.addLayer({
+        id: 'icons',
+        type: 'symbol',
+        source: 'places',
+        layout: {
+          'icon-image': '{icon}',
+          'icon-size': 0.25,
+          'icon-allow-overlap': false
+        }
+      })
+      this.map.on('mouseenter', 'icons', () => {
+        this.map.getCanvas().style.cursor = 'pointer';
+      })
+      this.map.on('mouseleave', 'icons', () => {
+        this.map.getCanvas().style.cursor = ''
+      })
+      this.map.on('click', 'icons', e => {
+        this.selectedIcon = JSON.parse(e.features[0].properties.info)
       })
     },
-    selectCategory(index) {
-      this.selectedCategory = index
-      const category = this.categories[index]
-      
-      this.categoryMarkers.forEach(marker => {
-        if (marker.category === category || category === 'Alles') {
-          marker.element.style.display = 'block'
-        } else {
-          marker.element.style.display = 'none'
+    addImage(image) {
+      this.map.loadImage(image.img, (err, img)  => {
+        if (!err) {
+          this.map.addImage(image.name, img)
         }
       })
     }
@@ -291,9 +314,8 @@ export default {
     })
 
     this.map.on('load', () => {
-      this.setRoute()
-      this.setBikePoints()
       this.setIcons()
+      this.setRoute()
     })
   }
 }

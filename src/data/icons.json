@@ -1,6 +1,6 @@
 [
   {
-    "id": "bed",
+    "subcategory": "bed",
     "category": "Overnachten",
     "data": [
       {
@@ -60,7 +60,7 @@
     ]
   },
   {
-    "id": "tent",
+    "subcategory": "tent",
     "category": "Overnachten",
     "data": [
       {
@@ -174,7 +174,7 @@
     ]
   },
   {
-    "id": "klaver",
+    "subcategory": "klaver",
     "category": "Aanbod Recreatie",
     "data": [
       {
@@ -216,7 +216,7 @@
     ]
   },
   {
-    "id": "ster",
+    "subcategory": "ster",
     "category": "Aanbod Recreatie",
     "data": [
       {
@@ -357,7 +357,7 @@
     ]
   },
   {
-    "id": "bestek",
+    "subcategory": "bestek",
     "category": "Eten en drinken",
     "data": [
       {
