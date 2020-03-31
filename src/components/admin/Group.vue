@@ -111,7 +111,8 @@ export default {
             type: this.type,
             headerImage: headerPath,
             coverImage: coverPath,
-            data: null
+            data: null,
+            group: null
           }
           firebase.firestore().collection('routes').doc(slugify(this.name.toLowerCase())).set(group).then(doc => {
             this.feedback = null

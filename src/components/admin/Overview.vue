@@ -15,7 +15,7 @@
       <div class="admin-routes-route admin-container" v-for="route in routes" :key="route.id">
         <h3>{{ route.name }}</h3>
         <p v-if="route.group">Groep: {{ route.group }}</p>
-        <p>{{ route.distance.toLocaleString() }} km</p>
+        <p>{{ parseFloat(route.distance).toFixed(2) }} km</p>
         <small>{{ route.type }}</small>
         <button class="admin-remove-btn" @click="deleteRoute(route)">Delete</button>
       </div>
@@ -56,7 +56,7 @@ export default {
       })
     },
     getRoutes() {
-      const groupRef = firebase.firestore().collection('routes').orderBy('group', 'asc')
+      const groupRef = firebase.firestore().collection('routes').orderBy('distance', 'asc')
       groupRef.get().then(snapshot => {
         let routes = []
         snapshot.forEach(doc => {

@@ -27,7 +27,7 @@
       <label>Maak route</label>
       <div style="position: relative;">
         <div id="route-map"></div>
-        <div class="distance-container">{{ distance.toLocaleString() }} km</div>
+        <div class="distance-container">{{ parseFloat(distance).toFixed(2) }} km</div>
       </div>
     </div>
     <input type="checkbox" id="fietsknooppunten" v-model="addBikepoints">

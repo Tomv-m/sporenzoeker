@@ -1,24 +1,26 @@
 <template>
-  <div v-if="route">
-    <Routes
-      v-if="route.group" 
-      :group="route"
-    />
-    <Route
-      v-else
-      :route="route"
-      :prevRoute="from"
-    />
+  <div v-if="routeFound">
+    <div v-if="!loading">
+      <Routes
+        v-if="route.data === null"
+        :group="route"
+      />
+      <Route
+        v-else
+        :route="route"
+        :prevRoute="from"
+      />
+    </div>
   </div>
   <NotFound v-else/>
 </template>
 
 <script>
+import firebase from 'firebase/app'
+
 import Routes from '@/components/subViews/Routes'
 import Route from '@/components/subViews/Route'
 import NotFound from '@/components/NotFound'
-// JSON
-import routes from '@/data/routes'
 
 export default {
   name: 'RouteRoutes',
@@ -29,23 +31,36 @@ export default {
   },
   data() {
     return {
+      loading: true,
       from: null,
-      routes
+      route: null,
+      routeFound: true
+    }
+  },
+  methods: {
+    getRouteRoutes() {
+      firebase.firestore().collection('routes').doc(this.$route.params.slug.toLowerCase()).get().then(doc => {
+        const data = doc.data()
+        if (doc.exists && data.group === null) {
+          this.route = { id: doc.id, ...data }
+        } else {
+          this.routeFound = false
+        }
+        this.loading = false
+      })
     }
   },
   beforeRouteEnter(to, from, next) {
-      next((vm) => {
-          vm.from = from
-      })
+    next((vm) => {
+      vm.from = from
+    })
   },
-  computed: {
-    route() {
-      if (this.routes.length > 0) {
-        return this.routes.find(route => {
-          return route.slug === this.$route.params.slug
-        })
-      }
-      return null
+  created() {
+    this.getRouteRoutes()
+  },
+  watch: {
+    '$route.params.slug'() {
+      this.getRouteRoutes()
     }
   }
 }

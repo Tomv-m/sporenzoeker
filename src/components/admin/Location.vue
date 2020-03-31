@@ -5,8 +5,8 @@
     <input type="text" class="admin-input" placeholder="Naam" v-model="name">
     <label>Telefoon</label>
     <input type="text" class="admin-input" id="point-input" placeholder="Telefoon nummer" v-model="phone">
-    <label>Website</label>
-    <input type="text" class="admin-input" placeholder="Website url" v-model="site">
+    <label>Meer info</label>
+    <input type="text" class="admin-input" placeholder="Website URL" v-model="site">
     <label>Categorie</label>
     <div class="categories">
       <button @click="() => { category = 'Overnachten'; type = 'bed' }" class="admin-categorie-button" :class="{ 'active':  type === 'bed' }">

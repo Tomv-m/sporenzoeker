@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import firebase from 'firebase/app'
 
 import Home from './views/Home.vue'
-import SingleMap from './views/SingleMap.vue'
 import RouteRoutes from './views/RouteRoutes.vue'
 import RoutePage from './views/RoutePage.vue'
 
@@ -22,11 +21,11 @@ const router = new Router({
       name: 'Home',
       component: Home
     },
-    {
-      path: '/kaart',
-      name: 'Map',
-      component: SingleMap
-    },
+    // {
+    //   path: '/kaart',
+    //   name: 'Map',
+    //   component: SingleMap
+    // },
     {
       path: '/admin',
       name: 'Admin',

@@ -1,8 +1,8 @@
 <template>
   <div class="route-page">
     <Headful
-      :title="'Sporenzoeker | ' + route.title"
-      :image="image"
+      :title="'Sporenzoeker | ' + route.name"
+      :image="coverImage"
     />
     <header class="main-header">
       <div class="wrapper">
@@ -31,18 +31,18 @@
             Mijn locatie
           </button>
         </div>
-        <div class="route-item route-item-small" :title="route.title">
+        <div class="route-item route-item-small" :title="route.name">
           <div
             class="route-item-image"
-            :style="{ 'background-image': 'url(' + image + ')' }"
+            :style="{ 'background-image': 'url(' + coverImage + ')' }"
           />
           <div class="route-item-info">
             <div class="route-item-info-top">
-              <h2>{{ route.title }}</h2>
+              <h2>{{ route.name }}</h2>
             </div>
             <div class="route-item-info-bottom">
               <div class="content">
-                <span>{{ route.subTitle }}</span>
+                <span>{{ parseFloat(route.distance).toFixed(2) }} km</span>
                 <div class="divider"></div>
                 <span>{{ visualType }}</span>
               </div>
@@ -56,21 +56,21 @@
       </div>
     </div>
     <transition name="fade">
-      <Modal v-if="selectedIcon" @close="selectedIcon = null">
+      <Modal v-if="selectedLocation" @close="selectedLocation = null">
         <div class="modal-info">
           <header>
-            <h2>{{ selectedIcon.name }}</h2>
-            <span>{{ selectedIcon.category }}</span>
+            <h2>{{ selectedLocation.name }}</h2>
+            <span>{{ selectedLocation.category }}</span>
           </header>
           <ul class="contact">
             <li>
-              <span class="contact-info">Adres </span>{{ selectedIcon.address }}
+              <span class="contact-info">Adres </span>{{ selectedLocation.address }}
             </li>
-            <li v-if="selectedIcon.tel">
-              <span class="contact-info">Telefoon </span>{{ selectedIcon.tel }}
+            <li v-if="selectedLocation.phone">
+              <span class="contact-info">Telefoon </span>{{ selectedLocation.phone }}
             </li>
-            <li v-if="selectedIcon.web">
-              <span class="contact-info">Website </span><a target="_blank" :href="url(selectedIcon.web)">{{ selectedIcon.web }}</a>
+            <li v-if="selectedLocation.site">
+              <a :href="url(selectedLocation.site)" target="_blank">Meer info</a>
             </li>
           </ul>
         </div>
@@ -79,24 +79,28 @@
     <transition name="fade">
       <Modal v-if="attributionter" @close="attributionter = false">
         <ul class="map-footer">
-          <li><a target="_blank" href="https://toerlezjoere.nl">&copy; Toerlezjoere</a></li>
+          <li><a target="_blank" href="https://toerismedebaronie.nl/">&copy; Toerisme De Baronie</a></li>
           <li><a target="_blank" href="https://www.mapbox.com/about/maps/">&copy; Mapbox</a></li>
           <li><a target="_blank" href="http://www.openstreetmap.org/about/">&copy; OpenStreetMap</a></li>
           <li><a target="_blank" href="https://www.mapbox.com/map-feedback/"><b>Improve this map</b></a></li>
         </ul>
       </Modal>
     </transition>
+    <div class="route-page-loader" v-if="loading">
+      <Loader />
+    </div>
     <div id="map"></div>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase/app'
 import mapbox from 'mapbox-gl'
+import { ScaleOut as Loader } from 'vue-loading-spinner'
+
 import FietsIcon from '@/components/icons/FietsIcon'
 import LoopIcon from '@/components/icons/LoopIcon'
 import Modal from '@/components/Modal'
-// JSON
-import iconsData from '@/data/icons'
 // Icons
 import ster from '@/assets/images/icons/ster.png';
 import bestek from '@/assets/images/icons/bestek.png';
@@ -107,6 +111,7 @@ import tent from '@/assets/images/icons/tent.png';
 export default {
   name: 'Route',
   components: {
+    Loader,
     FietsIcon,
     LoopIcon,
     Modal
@@ -125,32 +130,26 @@ export default {
       } else {
         return ''
       }
-    },
-    routeData() {
-      return require(`@/data/routes/${this.route.file}.json`)
-    },
-    image() {
-      return require(`@/assets/images/items/${this.route.file}.jpg`)
     }
   },
   data() {
     return {
+      loading: true,
       map: null,
-      accessToken: 'pk.eyJ1Ijoidi1tdG9tIiwiYSI6ImNqcm90dGN1ejBobWY0NHJxa3NnMnY5ODkifQ.8i5ISQiZx3iRP2nUNTznJg',
       mapStyle: 'mapbox://styles/mapbox/outdoors-v10',
       attributionter: false,
-      selectedIcon: null,
+      selectedLocation: null,
       userPosition: null,
       userMarker: null,
       showUserLocationBtn: false,
+      coverImage: '',
       iconImages: [
         { img: ster, name: 'ster' },
         { img: bestek, name: 'bestek' },
         { img: klaver, name: 'klaver' },
         { img: bed, name: 'bed' },
         { img: tent, name: 'tent' },
-      ],
-      iconsData
+      ]
     }
   },
   methods: {
@@ -160,11 +159,8 @@ export default {
       }
       return url
     },
-    setRoute() {
-      if (this.route.type === 'fietsen' && this.routeData.bikePoints) {
-        this.setBikePoints()
-      }
-      const coordinates = this.routeData.coordinates
+    setRoute(coordinates) {
+      coordinates = coordinates.map(item => [item.lng, item.lat])
       this.map.addLayer({
         "id": "route",
         "type": "line",
@@ -192,17 +188,15 @@ export default {
       const bounds = coordinates.reduce((bounds, coord) => {
         return bounds.extend(coord)
       }, new mapbox.LngLatBounds(coordinates[0], coordinates[0]))
-      this.map.fitBounds(bounds, {
-        zoom: this.routeData.zoom
-      })
+      this.map.fitBounds(bounds, { padding: 40 })
     },
-    setBikePoints() {
-      this.routeData.bikePoints.forEach(point => {
+    setBikePoints(bikePoints) {
+      bikePoints.forEach(point => {
         let el = document.createElement('div');
         el.className = 'bike-point'
         el.innerHTML = point.name
         new mapbox.Marker(el)
-          .setLngLat(point.coordinates)
+          .setLngLat([point.lng, point.lat])
           .addTo(this.map)
       })
     },
@@ -214,7 +208,7 @@ export default {
           center: this.userPosition,
           zoom: 14,
           essential: true
-        });
+        })
       }, err => {
         if (err.code == err.PERMISSION_DENIED) {
           this.showUserLocationBtn = false
@@ -232,35 +226,11 @@ export default {
         this.userMarker.setLngLat(this.userPosition)
       }
     },
-    convertIconsToGeojson(icons) {
-      let allIcons = []
-      icons.forEach(sec => {
-        const secIcons = sec.data.map(icon => {
-          return {
-            'type': 'Feature',
-            'properties': {
-              'category': sec.category,
-              'icon': sec.subcategory,
-              'info': icon.info
-            },
-            'geometry': {
-              'type': 'Point',
-              'coordinates': icon.coordinates
-            }
-          }
-        })
-        allIcons = [...allIcons, ...secIcons]
-      })
-      return {
-        'type': 'FeatureCollection',
-        'features': allIcons
-      }
-    },
-    setIcons() {
+    setLocations(locations) {
       this.iconImages.forEach(img => this.addImage(img))
       this.map.addSource('places', {
         type: 'geojson',
-        data: this.convertIconsToGeojson(this.iconsData)
+        data: this.convertLocationsToGeojson(locations)
       })
       this.map.addLayer({
         id: 'icons',
@@ -279,8 +249,35 @@ export default {
         this.map.getCanvas().style.cursor = ''
       })
       this.map.on('click', 'icons', e => {
-        this.selectedIcon = JSON.parse(e.features[0].properties.info)
+        this.selectedLocation = JSON.parse(e.features[0].properties.info)
       })
+    },
+    convertLocationsToGeojson(locations) {
+      const features = locations.map(location => {
+        const { address, name, phone, site, category } = location
+        const info = {
+          address,
+          name,
+          phone,
+          site,
+          category
+        }
+        return  {
+          'type': 'Feature',
+          'properties': {
+            'icon': location.type,
+            'info': info
+          },
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [location.coordinates.lng, location.coordinates.lat]
+          }
+        }
+      })
+      return {
+        'type': 'FeatureCollection',
+        'features': features
+      }
     },
     addImage(image) {
       this.map.loadImage(image.img, (err, img)  => {
@@ -288,13 +285,61 @@ export default {
           this.map.addImage(image.name, img)
         }
       })
+    },
+    getRouteData() {
+      firebase.firestore().doc(this.route.data).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data()
+          this.setRoute(data.coordinates)
+          if (data.bikePoints.length > 0) {
+            this.setBikePoints(data.bikePoints)
+          }
+          this.loading = false
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getLocations() {
+      firebase.firestore().collection('locations').get().then(snapshot => {
+        let locations = []
+        snapshot.forEach(doc => {
+          locations.push({ id: doc.id, ...doc.data() })
+        })
+        this.setLocations(locations)
+      })
+    },
+    getImage() {
+      const storage = firebase.storage()
+      const url = storage.ref(this.route.coverImage).getDownloadURL().then(url => {
+        this.coverImage = url
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
+  created() {
+    this.getImage()
+  },
   mounted() {
-    if (window.navigator.geolocation) {
-      this.showUserLocationBtn = true
+    // initialize map
+    this.map = new mapbox.Map({
+      container: 'map',
+      style: this.mapStyle,
+      attributionControl: false,
+      center: [4.9443857, 51.5416528],
+      zoom: 10
+    })
+    this.map.on('load', () => {
+      this.getRouteData()
+      this.getLocations()
+    })
 
+    // setup user location
+    if (window.navigator.geolocation) {
+      
       window.navigator.geolocation.getCurrentPosition(pos => {
+        this.showUserLocationBtn = true
         this.userPosition = [pos.coords.longitude, pos.coords.latitude]
         this.showUserPoint()
       }, err => {
@@ -303,20 +348,6 @@ export default {
         }
       })
     }
-    
-    mapbox.accessToken = this.accessToken
-    this.map = new mapbox.Map({
-      container: 'map',
-      style: this.mapStyle,
-      attributionControl: false,
-      center: [4.9443857, 51.5416528],
-      zoom: 10
-    })
-
-    this.map.on('load', () => {
-      this.setIcons()
-      this.setRoute()
-    })
   }
 }
 </script>

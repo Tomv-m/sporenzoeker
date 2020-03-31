@@ -1,21 +1,22 @@
 <template>
   <router-link
     class="route-item route-item-normal"
-    :to="route.slug"
-    :title="route.title"
+    :to="route.id"
+    :title="route.name"
   >
     <div
       class="route-item-image"
-      :style="{ 'background-image': 'url(' + getImage(route.file) + ')' }"
+      :style="{ 'background-image': 'url(' + coverImage + ')' }"
     />
     <div class="route-item-info">
       <div class="route-item-info-top">
-        <h2>{{ route.title }}</h2>
+        <h2>{{ route.name }}</h2>
       </div>
       <div class="route-item-info-bottom">
         <div class="content">
-          <span v-if="route.subTitle">{{ route.subTitle }}</span>
-          <div v-if="route.subTitle" class="divider"></div>
+          <span v-if="route.subtitle">{{ route.subtitle }}</span>
+          <span v-else-if="route.distance">{{ parseFloat(route.distance).toFixed(2) }} km</span>
+          <div v-if="route.subtitle || route.distance" class="divider"></div>
           <span>{{ type }}</span>
         </div>
         <div class="content-icon">
@@ -28,6 +29,8 @@
 </template>
 
 <script>
+import firebase from 'firebase/app'
+
 import FietsIcon from '@/components/icons/FietsIcon'
 import LoopIcon from '@/components/icons/LoopIcon'
 
@@ -42,18 +45,30 @@ export default {
   },
   computed: {
     type() {
-      if (this.route.group) {
-        const groupType = this.route.type === 'lopen' ? 'wandelingen' : 'fietsroutes'
-        return this.route.group.length + ' ' + groupType
+      if (!this.route.data) {
+        return this.route.type === 'lopen' ? 'Wandelingen' : 'Fietsroutes'
       } else {
         return this.route.type === 'lopen' ? 'Wandelen' : 'Fietsen'
       }
     }
   },
-  methods: {
-    getImage(img) {
-      return require(`@/assets/images/items/${img}.jpg`)
+  data() {
+    return {
+      coverImage: ''
     }
+  },
+  methods: {
+     getImage() {
+      const storage = firebase.storage()
+      const url = storage.ref(this.route.coverImage).getDownloadURL().then(url => {
+        this.coverImage = url
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  },
+  created() {
+    this.getImage()
   }
 }
 </script>

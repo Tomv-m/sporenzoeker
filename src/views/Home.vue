@@ -28,10 +28,14 @@
         </button>
       </form>
       <div class="route-list">
+        <div class="route-list-loading" v-if="loading">
+          <Loader background="#008D36" color="#008D36" />
+        </div>
         <Item
+          v-else
           v-for="route in allRoutes"
           :route="route"
-          :key="route.slug"
+          :key="route.id"
         />
       </div>
     </div>
@@ -40,11 +44,12 @@
 </template>
 
 <script>
+import firebase from 'firebase/app'
+import { ScaleOut as Loader } from 'vue-loading-spinner'
+
 import MainHeader from '@/components/Header'
 import MainFooter from '@/components/Footer'
 import Item from '@/components/Item'
-// JSON
-import routes from '@/data/routes'
 // Icons
 import LoopIcon from '@/components/icons/LoopIcon'
 import FietsIcon from '@/components/icons/FietsIcon'
@@ -53,6 +58,7 @@ import SearchIcon from '@/components/icons/SearchIcon'
 export default {
   name: 'home',
   components: {
+    Loader,
     MainHeader,
     MainFooter,
     LoopIcon,
@@ -62,9 +68,10 @@ export default {
   },
   data() {
     return {
+      loading: true,
       filter: null,
       search: '',
-      routes
+      routes: []
     }
   },
   computed: {
@@ -82,12 +89,23 @@ export default {
         return this.filtered
       } else {
         return this.filtered.filter(route => {
-          return route.title.toLowerCase().includes(this.search.trim().toLowerCase())
+          return route.name.toLowerCase().includes(this.search.trim().toLowerCase())
         })
       }
     }
   },
   methods: {
+    getRoutes() {
+      const routesRef = firebase.firestore().collection('routes').where('group', '==', null)
+      routesRef.get().then(snapshot => {
+        let routes = []
+        snapshot.forEach(doc => {
+          routes.push({ id: doc.id, ...doc.data() })
+        })
+        this.routes = routes
+        this.loading = false
+      })
+    },
     setFilter(value) {
       if (this.filter === value) {
         this.filter = null
@@ -100,6 +118,9 @@ export default {
         this.search = ''
       }
     }
+  },
+  created() {
+    this.getRoutes()
   }
 }
 </script>

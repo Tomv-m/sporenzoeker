@@ -48,7 +48,7 @@ input {
   top:0;
   bottom:0;
   width:100%;
-  z-index: -1;
+  z-index: -2;
 }
 .wrapper {
   position: relative;
@@ -114,11 +114,8 @@ input {
     opacity: .45;
     margin: 24px 0;
     &-logo {
-      .icon-color {
-        fill: $primary-color;
-      }
       svg {
-        width: 35%;
+        width: 56%;
       }
     }
     &-info {
@@ -167,6 +164,12 @@ input {
 }
 .route-list {
   width: 100%;
+  &-loading {
+    min-height: 282px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 .route-item {
   padding: 14px;
@@ -309,6 +312,18 @@ input {
   }
 }
 .route-page {
+  &-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($white, 0.4);
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   &-button {
     font-size: 14px;
     font-weight: 500;
@@ -430,29 +445,29 @@ input {
   border: 3px $white solid;
   box-shadow: 0 0 18px rgba($accent-color, .6);
 }
-.marker {
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-  z-index: 1;
-  background-size: cover;
-  background-repeat: no-repeat;
-  &-ster {
-    background-image: url('./assets/images/icons/ster.png');
-  }
-  &-bestek {
-    background-image: url('./assets/images/icons/bestek.png');
-  }
-  &-klaver {
-    background-image: url('./assets/images/icons/klaver.png');
-  }
-  &-bed {
-    background-image: url('./assets/images/icons/bed.png');
-  }
-  &-tent {
-    background-image: url('./assets/images/icons/tent.png');
-  }
-}
+// .marker {
+//   width: 32px;
+//   height: 32px;
+//   cursor: pointer;
+//   z-index: 1;
+//   background-size: cover;
+//   background-repeat: no-repeat;
+//   &-ster {
+//     background-image: url('./assets/images/icons/ster.png');
+//   }
+//   &-bestek {
+//     background-image: url('./assets/images/icons/bestek.png');
+//   }
+//   &-klaver {
+//     background-image: url('./assets/images/icons/klaver.png');
+//   }
+//   &-bed {
+//     background-image: url('./assets/images/icons/bed.png');
+//   }
+//   &-tent {
+//     background-image: url('./assets/images/icons/tent.png');
+//   }
+// }
 .map-footer {
   text-align: center;
   margin: 28px 0;
