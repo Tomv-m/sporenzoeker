@@ -1,7 +1,7 @@
 <template>
   <div class="route-page">
     <Headful
-      :title="'Sporenzoeker | ' + route.name"
+      :title="`Sporenzoeker | ${route ? route.name : 'Kaart'}`"
       :image="coverImage"
     />
     <header class="main-header">
@@ -21,7 +21,7 @@
             :to="prevRoute ? prevRoute : '/'"
             class="route-page-button"
           >
-            Terug naar routes
+            {{ route ? 'Terug naar routes' : 'Naar Home pagina' }}
           </router-link>
           <button
             v-if="showUserLocationBtn"
@@ -31,7 +31,7 @@
             Mijn locatie
           </button>
         </div>
-        <div class="route-item route-item-small" :title="route.name">
+        <div v-if="route" class="route-item route-item-small" :title="route.name">
           <div
             class="route-item-image"
             :style="{ 'background-image': 'url(' + coverImage + ')' }"
@@ -134,7 +134,7 @@ export default {
   },
   data() {
     return {
-      loading: true,
+      loading: false,
       map: null,
       mapStyle: 'mapbox://styles/mapbox/outdoors-v10',
       attributionter: false,
@@ -311,7 +311,7 @@ export default {
     },
     getImage() {
       const storage = firebase.storage()
-      const url = storage.ref(this.route.coverImage).getDownloadURL().then(url => {
+      storage.ref(this.route.coverImage).getDownloadURL().then(url => {
         this.coverImage = url
       }).catch(err => {
         console.log(err)
@@ -319,7 +319,10 @@ export default {
     }
   },
   created() {
-    this.getImage()
+    if (this.route) {
+      this.getImage()
+      this.loading = true
+    }
   },
   mounted() {
     // initialize map
@@ -331,7 +334,10 @@ export default {
       zoom: 10
     })
     this.map.on('load', () => {
-      this.getRouteData()
+      if (this.route) {
+      console.log(this.route)
+        this.getRouteData()
+      }
       this.getLocations()
     })
 

@@ -445,29 +445,29 @@ input {
   border: 3px $white solid;
   box-shadow: 0 0 18px rgba($accent-color, .6);
 }
-// .marker {
-//   width: 32px;
-//   height: 32px;
-//   cursor: pointer;
-//   z-index: 1;
-//   background-size: cover;
-//   background-repeat: no-repeat;
-//   &-ster {
-//     background-image: url('./assets/images/icons/ster.png');
-//   }
-//   &-bestek {
-//     background-image: url('./assets/images/icons/bestek.png');
-//   }
-//   &-klaver {
-//     background-image: url('./assets/images/icons/klaver.png');
-//   }
-//   &-bed {
-//     background-image: url('./assets/images/icons/bed.png');
-//   }
-//   &-tent {
-//     background-image: url('./assets/images/icons/tent.png');
-//   }
-// }
+.marker {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  z-index: 1;
+  background-size: cover;
+  background-repeat: no-repeat;
+  &-ster {
+    background-image: url('./assets/images/icons/ster.png');
+  }
+  &-bestek {
+    background-image: url('./assets/images/icons/bestek.png');
+  }
+  &-klaver {
+    background-image: url('./assets/images/icons/klaver.png');
+  }
+  &-bed {
+    background-image: url('./assets/images/icons/bed.png');
+  }
+  &-tent {
+    background-image: url('./assets/images/icons/tent.png');
+  }
+}
 .map-footer {
   text-align: center;
   margin: 28px 0;

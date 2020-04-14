@@ -5,6 +5,7 @@ import firebase from 'firebase/app'
 import Home from './views/Home.vue'
 import RouteRoutes from './views/RouteRoutes.vue'
 import RoutePage from './views/RoutePage.vue'
+import SingleMap from './views/Map.vue'
 
 // admin
 import Login from './views/Login.vue'
@@ -21,11 +22,11 @@ const router = new Router({
       name: 'Home',
       component: Home
     },
-    // {
-    //   path: '/kaart',
-    //   name: 'Map',
-    //   component: SingleMap
-    // },
+    {
+      path: '/kaart',
+      name: 'Map',
+      component: SingleMap
+    },
     {
       path: '/admin',
       name: 'Admin',

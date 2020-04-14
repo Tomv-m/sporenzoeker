@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div v-if="edit">
+    <EditLocation :location="edit" @close="closeEdit()" />
+  </div>
+  <div v-else>
     <h2>Overzicht</h2>
     <label v-if="groups.length > 0">Groepen</label>
     <div class="admin-groups">
@@ -27,6 +30,7 @@
         <p>{{ location.category }}</p>
         <small>{{ location.type }}-icon</small>
         <button class="admin-remove-btn" @click="deleteLocation(location)">Delete</button>
+        <button @click="editLocation(location)">Edit</button>
       </div>
     </div>
   </div>
@@ -34,17 +38,26 @@
 
 <script>
 import firebase from 'firebase/app'
+import EditLocation from './EditLocation'
 
 export default {
   name: 'Overview',
+  components: {
+    EditLocation
+  },
   data() {
     return {
       groups: [],
       routes: [],
-      locations: []
+      locations: [],
+      edit: null
     }
   },
   methods: {
+    closeEdit() {
+      this.edit = null
+      this.getLocation()
+    },
     getGroups() {
       const groupRef = firebase.firestore().collection('routes').where('data', '==', null)
       groupRef.get().then(snapshot => {
@@ -112,6 +125,9 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    editLocation(location) {
+      this.edit = location
     }
   },
   created() {

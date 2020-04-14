@@ -13,7 +13,7 @@
         >
           <h1>{{ group.name }}</h1>
         </div>
-        <span v-if="group.subTitle">{{ group.subTitle }}</span>
+        <span v-if="group.subtitle">{{ group.subtitle }}</span>
       </div>
       <div class="route-list">
         <div class="route-list-loading" v-if="loading">

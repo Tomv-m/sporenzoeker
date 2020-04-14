@@ -46,8 +46,12 @@ import firebase from 'firebase/app'
 
 export default {
   name: 'Location',
+  props: {
+    location: Object
+  },
   data() {
     return {
+      id: null,
       name: '',
       phone: '',
       site: '',
@@ -63,6 +67,16 @@ export default {
     }
   },
   methods: {
+    setLocation() {
+      this.id = this.location.id
+      this.name = this.location.name
+      this.phone = this.location.phone
+      this.site = this.location.site
+      this.category = this.location.category
+      this.type = this.location.type
+      this.address = this.location.address
+      this.coordinates = this.location.coordinates
+    },
     publish() {
       if (
         this.name.trim() !== '' &&
@@ -79,7 +93,7 @@ export default {
           type: this.type,
           coordinates: this.coordinates
         }
-        firebase.firestore().collection('locations').add(location).then(doc => {
+        firebase.firestore().collection('locations').doc(this.id).update(location).then(doc => {
           this.feedback = null
           this.$emit('close')
         }).catch(err => {
@@ -95,19 +109,22 @@ export default {
       this.element.className = this.type ? 'marker marker-' + this.type : 'marker marker-star'
       let marker = null
 
-      this.geocoder.on('result', ev => {
-        if (marker === null) {
-          marker = new mapbox.Marker({ draggable: true, element: this.element })
-            .setLngLat(ev.result.center)
-            .addTo(this.map)
+      marker = new mapbox.Marker({ draggable: true, element: this.element })
+        .setLngLat(this.coordinates)
+        .addTo(this.map)
+      
+      this.map.flyTo({
+        center: this.coordinates,
+        essential: true 
+      })
 
-          marker.on('dragend', () => {
-            const lngLat = marker.getLngLat()
-            this.coordinates = { lng: lngLat.lng, lat: lngLat.lat}
-          })
-        } else {
-          marker.setLngLat(ev.result.center)
-        }
+      marker.on('dragend', () => {
+        const lngLat = marker.getLngLat()
+        this.coordinates = { lng: lngLat.lng, lat: lngLat.lat}
+      })
+
+      this.geocoder.on('result', ev => {
+        marker.setLngLat(ev.result.center)
         this.coordinates = { lng: ev.result.center[0], lat: ev.result.center[1] }
         this.address = ev.result.place_name.replace(', Nederland', '')
       })
@@ -129,6 +146,9 @@ export default {
       })
     }
   },
+  created() {
+    this.setLocation()
+  },
   mounted() {
     this.map = new mapbox.Map({
       container: 'route-map',
@@ -147,12 +167,15 @@ export default {
     this.map.addControl(this.geocoder)
     this.map.on('load', () => this.setupMap())
 
+    // phone field to number field
     const pointInput = document.getElementById('point-input')
     this.setInputFilter(pointInput, value => /^[\d ]*$/.test(value))
   },
   watch: {
     type(newValue) {
-      this.element.className = 'marker marker-' + newValue
+      if (this.element) {
+        this.element.className = 'marker marker-' + newValue
+      }
     }
   }
 }
