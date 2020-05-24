@@ -1,7 +1,7 @@
 <template>
   <div class="route-page">
     <Headful
-      :title="`Sporenzoeker | ${route ? route.name : 'Kaart'}`"
+      :title="`${siteName} | ${route ? route.name : 'Kaart'}`"
       :image="coverImage"
     />
     <header class="main-header">
@@ -98,7 +98,7 @@ import firebase from 'firebase/app'
 import mapbox from 'mapbox-gl'
 import { ScaleOut as Loader } from 'vue-loading-spinner'
 
-import { isOranjenassau } from '../../global'
+import { isOranjenassau, siteName } from '../../global'
 
 import FietsIcon from '@/components/icons/FietsIcon'
 import LoopIcon from '@/components/icons/LoopIcon'
@@ -151,7 +151,8 @@ export default {
         { img: klaver, name: 'klaver' },
         { img: bed, name: 'bed' },
         { img: tent, name: 'tent' },
-      ]
+      ],
+      siteName
     }
   },
   methods: {

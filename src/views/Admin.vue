@@ -1,7 +1,7 @@
 <template>
   <div class="admin-wrapper">
     <Headful
-      title="Sporenzoeker | Admin"
+      :title="`${siteName} | Admin`"
     />
     <button @click="() => $router.push({ name: 'Home' })">Terug naar Home</button>
     <button class="admin-logout" @click="logout">Logout</button>
@@ -30,6 +30,8 @@
 <script>
 import firebase from 'firebase/app'
 
+import { siteName } from '../global'
+
 import Overview from '@/components/admin/Overview.vue'
 import Group from '@/components/admin/Group.vue'
 import Route from '@/components/admin/Route.vue'
@@ -46,6 +48,7 @@ export default {
   data() {
     return {
       createState: null,
+      siteName
     }
   },
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <div class="routes">
     <Headful
-      :title="'Sporenzoeker | ' + group.name"
+      :title="`${siteName} | ${group.name}`"
       :image="headerImage"
     />
     <MainHeader />
@@ -35,6 +35,8 @@
 import firebase from 'firebase/app'
 import { ScaleOut as Loader } from 'vue-loading-spinner'
 
+import { siteName } from '../../global'
+
 import MainHeader from '@/components/Header'
 import MainFooter from '@/components/Footer'
 import Item from '@/components/Item'
@@ -55,7 +57,8 @@ export default {
     return {
       loading: true,
       routes: [],
-      headerImage: ''
+      headerImage: '',
+      siteName
     }
   },
   methods: {
