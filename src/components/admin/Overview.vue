@@ -4,46 +4,78 @@
   </div>
   <div v-else>
     <h2>Overzicht</h2>
-    <label v-if="groups.length > 0">Groepen</label>
-    <div class="admin-groups">
-      <div class="admin-groups-group admin-container" v-for="group in groups" :key="group.id">
-        <h3>{{ group.name }}</h3>
-        <p>{{ group.subtitle }}</p>
-        <small>{{ group.type }}</small>
-        <button class="admin-remove-btn" @click="deleteGroup(group)">Delete</button>
-      </div>
+    <div class="admin-container">
+      <h3>Groepen</h3>
+      <VueGoodTable
+        :columns="[{ label: 'Naam', field: 'name' }, { label: 'Onder title', field: 'subtitle' }, { label: 'Type', field: 'type' }, { label: 'Verwijder', field: 'remove', sortable: false }]"
+        :rows="groups"
+        :search-options="{ enabled: true }"
+        :pagination-options="{ enabled: true }"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'name', type: 'asc'}}"
+      >
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field === 'remove'">
+            <button class="admin-remove-btn" @click="deleteGroup(props.row)">Delete</button>
+          </span>
+        </template>
+      </VueGoodTable>
     </div>
-    <label v-if="routes.length > 0">Routes</label>
-    <div class="admin-routes">
-      <div class="admin-routes-route admin-container" v-for="route in routes" :key="route.id">
-        <h3>{{ route.name }}</h3>
-        <p v-if="route.group">Groep: {{ route.group }}</p>
-        <p>{{ parseFloat(route.distance).toFixed(2) }} km</p>
-        <small>{{ route.type }}</small>
-        <button class="admin-remove-btn" @click="deleteRoute(route)">Delete</button>
-      </div>
+    <div class="admin-container">
+      <h3>Routes</h3>
+      <VueGoodTable
+        :columns="[{ label: 'Naam', field: 'name' }, { label: 'Group', field: 'group' }, { label: 'Afstand', field: 'distance' }, { label: 'Type', field: 'type' }, { label: 'Verwijder', field: 'remove', sortable: false }]"
+        :rows="routes"
+        :search-options="{ enabled: true }"
+        :pagination-options="{ enabled: true }"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'name', type: 'asc'}}"
+      >
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field === 'distance'">
+            {{ parseFloat(props.row.distance).toFixed(2) }} km
+          </span>
+          <span v-else-if="props.column.field === 'remove'">
+            <button class="admin-remove-btn" @click="deleteRoute(props.row)">Delete</button>
+          </span>
+        </template>
+      </VueGoodTable>
     </div>
-    <label v-if="locations.length > 0">Locaties</label>
-    <div class="admin-locations">
-      <div class="admin-locations-location admin-container" v-for="location in locations" :key="location.id">
-        <h3>{{ location.name }}</h3>
-        <p>{{ location.category }}</p>
-        <small>{{ location.type }}-icon</small>
-        <button class="admin-remove-btn" @click="deleteLocation(location)">Delete</button>
-        <button @click="editLocation(location)">Edit</button>
-      </div>
+    <div class="admin-container">
+      <h3>Locaties</h3>
+      <VueGoodTable
+        :columns="[{ label: 'Naam', field: 'name' }, { label: 'Categorie', field: 'category' }, { label: 'Icon', field: 'type' }, { label: 'Verwijder', field: 'remove', sortable: false }, { label: 'Bewerk', field: 'edit', sortable: false }]"
+        :rows="locations"
+        :search-options="{ enabled: true }"
+        :pagination-options="{ enabled: true }"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'type', type: 'asc'}}"
+      >
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field === 'remove'">
+            <button class="admin-remove-btn" @click="deleteLocation(props.row)">Delete</button>
+          </span>
+          <span v-else-if="props.column.field === 'edit'">
+            <button @click="editLocation(props.row)">Edit</button>
+          </span>
+        </template>
+      </VueGoodTable>
     </div>
   </div>
 </template>
 
 <script>
+import 'vue-good-table/dist/vue-good-table.css'
+
 import firebase from 'firebase/app'
+import { VueGoodTable } from 'vue-good-table';
+
 import EditLocation from './EditLocation'
+
+import { routesCollection } from '../../global'
 
 export default {
   name: 'Overview',
   components: {
-    EditLocation
+    EditLocation,
+    VueGoodTable
   },
   data() {
     return {
@@ -59,7 +91,7 @@ export default {
       this.getLocation()
     },
     getGroups() {
-      const groupRef = firebase.firestore().collection('routes').where('data', '==', null)
+      const groupRef = firebase.firestore().collection(routesCollection).where('data', '==', null)
       groupRef.get().then(snapshot => {
         let groups = []
         snapshot.forEach(doc => {
@@ -69,7 +101,7 @@ export default {
       })
     },
     getRoutes() {
-      const groupRef = firebase.firestore().collection('routes').orderBy('distance', 'asc')
+      const groupRef = firebase.firestore().collection(routesCollection).orderBy('distance', 'asc')
       groupRef.get().then(snapshot => {
         let routes = []
         snapshot.forEach(doc => {
@@ -95,7 +127,7 @@ export default {
       // delete header
       const deleteHeader = storage.child(group.headerImage).delete()
       // delete current group
-      const deleteGroup = firebase.firestore().doc('routes/' + group.id).delete()
+      const deleteGroup = firebase.firestore().doc(`${routesCollection}/${group.id}`).delete()
       // call delete actions
       Promise.all([deleteCover, deleteHeader, deleteGroup]).then(values => {
         this.groups = this.groups.filter(groupItem => groupItem.id !== group.id)
@@ -110,7 +142,7 @@ export default {
       // delete data
       const deleteData = firebase.firestore().doc(route.data).delete()
       // delete current route
-      const deleteRoute = firebase.firestore().doc('routes/' + route.id).delete()
+      const deleteRoute = firebase.firestore().doc(`${routesCollection}/${route.id}`).delete()
       // call delete actions
       Promise.all([deleteCover, deleteData, deleteRoute]).then(values => {
         this.routes = this.routes.filter(routeItem => routeItem.id !== route.id)

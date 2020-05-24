@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "sporenzoeker"
+  },
+  "targets": {
+    "sporenzoeker": {
+      "hosting": {
+        "sporenzoeker": [
+          "oranjenassau",
+          "sporenzoeker"
+        ]
+      }
+    }
   }
 }

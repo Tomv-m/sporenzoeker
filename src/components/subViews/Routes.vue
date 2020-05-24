@@ -38,6 +38,7 @@ import { ScaleOut as Loader } from 'vue-loading-spinner'
 import MainHeader from '@/components/Header'
 import MainFooter from '@/components/Footer'
 import Item from '@/components/Item'
+import { routesCollection } from '../../global'
 
 export default {
   name: 'Routes',
@@ -59,7 +60,7 @@ export default {
   },
   methods: {
     getRoutes() {
-      const routesRef = firebase.firestore().collection('routes').where('group', '==', this.group.id)
+      const routesRef = firebase.firestore().collection(routesCollection).where('group', '==', this.group.id)
       routesRef.get().then(snapshot => {
         let routes = []
         snapshot.forEach(doc => {

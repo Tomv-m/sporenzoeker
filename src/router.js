@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import firebase from 'firebase/app'
 
+import { routePrefix, isOranjenassau } from './global'
+
 import Home from './views/Home.vue'
 import RouteRoutes from './views/RouteRoutes.vue'
 import RoutePage from './views/RoutePage.vue'
@@ -13,42 +15,52 @@ import Admin from './views/Admin.vue'
 
 Vue.use(Router)
 
+const routes = [
+  {
+    path: '/kaart',
+    name: 'Map',
+    component: SingleMap
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: `${routePrefix}/`,
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: `${routePrefix}/:slug`,
+    name: 'RouteRoutes',
+    component: RouteRoutes
+  },
+  {
+    path: `${routePrefix}/:slug/:slug2`,
+    name: 'Route',
+    component: RoutePage
+  }
+]
+
+if (isOranjenassau) {
+  routes.push(
+    { path: '/', redirect: `${routePrefix}` }
+  )
+}
+
+console.log(routes)
+
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'Home',
-      component: Home
-    },
-    {
-      path: '/kaart',
-      name: 'Map',
-      component: SingleMap
-    },
-    {
-      path: '/admin',
-      name: 'Admin',
-      component: Admin,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/admin/login',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/:slug',
-      name: 'RouteRoutes',
-      component: RouteRoutes
-    },
-    {
-      path: '/:slug/:slug2',
-      name: 'Route',
-      component: RoutePage
-    }
-  ]
+  routes
 })
 
 router.beforeEach((to, from, next) => {

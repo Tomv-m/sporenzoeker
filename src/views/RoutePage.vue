@@ -14,6 +14,8 @@
 <script>
 import firebase from 'firebase/app'
 
+import { routesCollection } from '../global'
+
 import Route from '@/components/subViews/Route'
 import NotFound from '@/components/NotFound'
 
@@ -33,7 +35,7 @@ export default {
   },
   methods: {
     getRoute() {
-      firebase.firestore().collection('routes').doc(this.$route.params.slug2.toLowerCase()).get().then(doc => {
+      firebase.firestore().collection(routesCollection).doc(this.$route.params.slug2.toLowerCase()).get().then(doc => {
         const data = doc.data()
         if (doc.exists && data.group === this.$route.params.slug.toLowerCase()) {
           this.route = { id: doc.id, ...data }

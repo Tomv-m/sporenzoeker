@@ -165,6 +165,7 @@ input {
 .route-list {
   width: 100%;
   &-loading {
+    pointer-events: none;
     min-height: 282px;
     display: flex;
     justify-content: center;
@@ -423,7 +424,7 @@ input {
     }
   }
 }
-.bike-point {
+.route-point {
   background: $white;
   width: 26px;
   height: 26px;
@@ -435,6 +436,18 @@ input {
   border: 3.5px solid $accent-color;
   color: $accent-color;
   padding: 0 1px 1px 0;
+  &.hex {
+    font-weight: 500;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background-color: transparent;
+    background-image: url('./assets/images/hexagon.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0;
+  }
 }
 .user-point {
   position: relative;

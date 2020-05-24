@@ -33,7 +33,7 @@
     </div>
     <div>
       <button @click="$emit('close')">X</button>
-      <button @click="publish">Publiseer</button>
+      <button @click="publish">Update</button>
       <p v-if="feedback">{{ feedback }}</p>
     </div>
   </div>
@@ -70,8 +70,8 @@ export default {
     setLocation() {
       this.id = this.location.id
       this.name = this.location.name
-      this.phone = this.location.phone
-      this.site = this.location.site
+      this.phone = this.location.phone ? this.location.phone : ''
+      this.site = this.location.site ? this.location.site : ''
       this.category = this.location.category
       this.type = this.location.type
       this.address = this.location.address

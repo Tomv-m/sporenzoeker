@@ -2,7 +2,7 @@
   <header class="main-header">
     <div class="wrapper">
       <router-link to="/">
-        <Logo />
+        <Logo :isOranjenassau="isOranjenassau" />
       </router-link> 
       <div class="right-content">
         <slot />
@@ -14,10 +14,17 @@
 <script>
 import Logo from './icons/Logo'
 
+import { isOranjenassau } from '../global'
+
 export default {
   name: 'MainHeader',
   components: {
     Logo
+  },
+  data() {
+    return {
+      isOranjenassau
+    }
   }
 }
 </script>

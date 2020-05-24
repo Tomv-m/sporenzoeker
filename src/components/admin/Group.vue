@@ -35,6 +35,8 @@ import firebase from 'firebase/app'
 import { v4 as uuid } from 'uuid'
 import slugify from 'slugify'
 
+import { routesCollection } from '../../global'
+
 export default {
   name: 'Group',
   data() {
@@ -114,7 +116,7 @@ export default {
             data: null,
             group: null
           }
-          firebase.firestore().collection('routes').doc(slugify(this.name.toLowerCase())).set(group).then(doc => {
+          firebase.firestore().collection(routesCollection).doc(slugify(this.name.toLowerCase())).set(group).then(doc => {
             this.feedback = null
             this.$emit('close')
           })

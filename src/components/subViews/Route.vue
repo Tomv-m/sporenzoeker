@@ -98,6 +98,8 @@ import firebase from 'firebase/app'
 import mapbox from 'mapbox-gl'
 import { ScaleOut as Loader } from 'vue-loading-spinner'
 
+import { isOranjenassau } from '../../global'
+
 import FietsIcon from '@/components/icons/FietsIcon'
 import LoopIcon from '@/components/icons/LoopIcon'
 import Modal from '@/components/Modal'
@@ -193,7 +195,7 @@ export default {
     setBikePoints(bikePoints) {
       bikePoints.forEach(point => {
         let el = document.createElement('div');
-        el.className = 'bike-point'
+        el.className = isOranjenassau ? 'route-point hex' : 'route-point'
         el.innerHTML = point.name
         new mapbox.Marker(el)
           .setLngLat([point.lng, point.lat])

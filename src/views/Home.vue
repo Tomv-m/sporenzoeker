@@ -1,11 +1,12 @@
 <template>
   <div class="home">
     <Headful
-      title="Sporenzoeker | Home"
-      description="Ontdek met Sporenzoeker de Toerlezjoere-regio tussen Breda, Tilburg en de Belgische grens. Je vind hier onze favoriete fiets- en wandelroutes. Ervaar onderweg de omgeving, ontdek verrassende uitstapjes en geniet van een lekkere hap tussendoor of een heerlijk diner. Liever zonder telefoon erop uit? Verken het gebied met de brochure verkrijgbaar bij de leden van Toerlezjoere, deze zijn te vinden op de plattegrond en herkenbaar aan het schildje op de gevel. Beleef Toerlezjoere, ’t goeie van Brabant…"
+      :title="`${siteName} | Home`"
+      :description="siteDesc"
     />
     <MainHeader>
       <button
+        v-if="!isOranjenassau"
         class="icon-button"
         :class="{ active: filter === 'fietsen' }"
         @click="setFilter('fietsen')"
@@ -22,7 +23,7 @@
     </MainHeader>
     <div class="wrapper">
       <form @submit.prevent="searchItems" class="search-wrapper">
-        <input type="text" v-model="search" placeholder="Zoek jouw spoor..">
+        <input type="text" v-model="search" placeholder="Opzoek naar sporen?">
         <button class="search-button">
           <SearchIcon/>
         </button>
@@ -46,6 +47,8 @@
 <script>
 import firebase from 'firebase/app'
 import { ScaleOut as Loader } from 'vue-loading-spinner'
+
+import { siteName, siteDesc, isOranjenassau, routesCollection } from '../global'
 
 import MainHeader from '@/components/Header'
 import MainFooter from '@/components/Footer'
@@ -71,7 +74,10 @@ export default {
       loading: true,
       filter: null,
       search: '',
-      routes: []
+      routes: [],
+      siteName,
+      siteDesc,
+      isOranjenassau
     }
   },
   computed: {
@@ -96,7 +102,7 @@ export default {
   },
   methods: {
     getRoutes() {
-      const routesRef = firebase.firestore().collection('routes').where('group', '==', null)
+      const routesRef = firebase.firestore().collection(routesCollection).where('group', '==', null)
       routesRef.get().then(snapshot => {
         let routes = []
         snapshot.forEach(doc => {

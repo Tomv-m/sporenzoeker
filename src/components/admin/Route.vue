@@ -31,7 +31,7 @@
       </div>
     </div>
     <input type="checkbox" id="fietsknooppunten" v-model="addBikepoints">
-    <label for="fietsknooppunten">Fietsknooppunten</label>
+    <label for="fietsknooppunten">Route Punten</label>
     <BikepointMap v-if="addBikepoints" :mapStyle="mapStyle" v-model="bikePoints" />
     <div>
       <button @click="$emit('close')">X</button>
@@ -49,6 +49,8 @@ import slugify from 'slugify'
 import turf from '@turf/length'
 
 import BikepointMap from './BikepointMap.vue'
+
+import { routesCollection, routeDataCollection } from '../../global'
 
 export default {
   name: 'Route',
@@ -119,7 +121,7 @@ export default {
         const bikePoints = this.bikePoints.map(bikePoint => { return { name: bikePoint.name, lng: bikePoint.coordinates.lng, lat: bikePoint.coordinates.lat } })
         const coordinates = this.coordinates.map(coordinates => { return { lng: coordinates[0], lat: coordinates[1]  } })
         const uploadCover = storage.child('cover/' + this.coverImage.name).put(this.coverImage.data)
-        const uploadData = db.collection('route-data').add({ bikePoints, coordinates })
+        const uploadData = db.collection(routeDataCollection).add({ bikePoints, coordinates })
         Promise.all([uploadCover, uploadData]).then(values => {
           const coverPath = values[0].metadata.fullPath
           const dataPath = values[1].path
@@ -131,7 +133,7 @@ export default {
             coverImage: coverPath,
             data: dataPath
           }
-          db.collection('routes').doc(slugify(this.name.toLowerCase())).set(route).then(doc => {
+          db.collection(routesCollection).doc(slugify(this.name.toLowerCase())).set(route).then(doc => {
             this.feedback = null
             this.$emit('close')
           })

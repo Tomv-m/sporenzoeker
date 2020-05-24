@@ -13,6 +13,8 @@
 import mapbox from 'mapbox-gl'
 import { v4 as uuid } from 'uuid'
 
+import { isOranjenassau } from '../../global'
+
 export default {
   name: 'BikepointMap',
   props: ['mapStyle'],
@@ -37,7 +39,7 @@ export default {
     addPoint() {
       if (this.pointValue.trim() !== '') {
         let el = document.createElement('div');
-        el.className = 'bike-point'
+        el.className = isOranjenassau ? 'route-point hex' : 'route-point'
         el.innerHTML = this.pointValue
         const mapCenter = this.map.getCenter()
         const markerId = uuid()

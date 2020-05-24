@@ -5,7 +5,7 @@
         <Logo />
       </a>
       <div class="main-footer-info">
-        <span>&copy; Sporenzoeker</span>
+        <span>&copy; {{siteName}}</span>
         <div class="divider"/>
         <a href="https://www.ouwelandontwerp.nl/" target="_blank">Ouweland Ontwerp</a>
       </div>
@@ -16,10 +16,17 @@
 <script>
 import Logo from './icons/TLZLogo'
 
+import { siteName } from '../global'
+
 export default {
   name: 'MainFooter',
   components: {
     Logo
+  },
+  data() {
+    return {
+      siteName
+    }
   }
 }
 </script>
