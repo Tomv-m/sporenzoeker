@@ -2,7 +2,7 @@
 
 ### Project setup
 
-Add `src/firebase.js` with underneath content.
+Add `src/firebase.js` with underneath content:
 
 ```js
 import firebase from 'firebase/app'
@@ -20,7 +20,7 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 ```
 
-Add `.env.local` with mapbox api-key 
+Add `.env.local` with mapbox api-key:
 
 ```
 VUE_APP_MAPBOX_KEY=pk.eyJ1..
