@@ -1,29 +1,17 @@
 <template>
   <div class="admin-wrapper">
-    <Headful
-      :title="`${siteName} | Admin`"
-    />
-    <button @click="() => $router.push({ name: 'Home' })">Terug naar Home</button>
-    <button class="admin-logout" @click="logout">Logout</button>
-    <button @click="create('select')">Nieuw</button>
-    <div class="create-options" v-if="createState === 'select'">
-      <button @click="create('route')" class="admin-create">Route</button>
-      <button @click="create('group')" class="admin-create">Groep</button>
-      <button @click="create('location')" class="admin-create">Locatie</button>
-      <button @click="create(null)">Annuleer</button>
+    <Headful :title="`${siteName} | Admin`" />
+    <div class="admin-header">    
+      <button class="admin-button" @click="() => $router.push({ name: 'Home' })">Terug naar Website</button>
+      <button class="admin-button admin-button-end admin-button-danger" @click="logout">Logout</button>
     </div>
-    <div class="admin-routes" v-if="createState === null">
-      <Overview @close="create(null)" />
-    </div>
-    <div class="create-route" v-if="createState === 'route'">
-      <Route @close="create(null)" />
-    </div>
-    <div class="create-group" v-if="createState === 'group'">
-      <Group @close="create(null)" />
-    </div>
-    <div class="create-group" v-if="createState === 'location'">
-      <Location @close="create(null)" />
-    </div>
+    <Route v-if="state === 'new-route'" @close="close" />
+    <Group v-else-if="state === 'new-group'" @close="close" />
+    <Location v-else-if="state === 'new-location'" @close="close" />
+    <EditRoute v-else-if="state === 'edit-route'" :route="payload" @close="close" />
+    <EditGroup v-else-if="state === 'edit-group'" :group="payload" @close="close" />
+    <EditLocation v-else-if="state === 'edit-location'" :location="payload" @close="close" />
+    <Overview v-else @open="props => open(props)" />
   </div>
 </template>
 
@@ -32,10 +20,14 @@ import firebase from 'firebase/app'
 
 import { siteName } from '../global'
 
-import Overview from '@/components/admin/Overview.vue'
-import Group from '@/components/admin/Group.vue'
-import Route from '@/components/admin/Route.vue'
-import Location from '@/components/admin/Location.vue'
+// Components
+import Overview from '@/components/admin/Overview'
+import Group from '@/components/admin/Group'
+import Route from '@/components/admin/Route'
+import Location from '@/components/admin/Location'
+import EditGroup from '@/components/admin/EditGroup'
+import EditRoute from '@/components/admin/EditRoute'
+import EditLocation from '@/components/admin/EditLocation'
 
 export default {
   name: 'Admin',
@@ -43,11 +35,15 @@ export default {
     Overview,
     Group,
     Route,
-    Location
+    Location,
+    EditGroup,
+    EditRoute,
+    EditLocation
   },
   data() {
     return {
-      createState: null,
+      state: null,
+      payload: null,
       siteName
     }
   },
@@ -57,8 +53,16 @@ export default {
         this.$router.replace({ name: 'Login' })
       })
     },
-    create(state) {
-      this.createState = state
+    open({ state, payload }) {
+      window.scrollTo(0, 0)
+      this.state = state
+      if (payload !== undefined) {
+        this.payload = payload
+      }
+    },
+    close() {
+      window.scrollTo(0, 0)
+      this.state = null
     }
   }
 }

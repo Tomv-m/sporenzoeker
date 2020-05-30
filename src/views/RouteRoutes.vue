@@ -41,7 +41,6 @@ export default {
   },
   methods: {
     getRouteRoutes() {
-      console.log('getting new route', this.$route.params.slug)
       firebase.firestore().collection(routesCollection).doc(this.$route.params.slug.toLowerCase()).get().then(doc => {
         const data = doc.data()
         if (doc.exists && data.group === null) {

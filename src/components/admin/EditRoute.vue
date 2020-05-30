@@ -1,14 +1,13 @@
 <template>
   <div class="admin-container">
     <div class="admin-container-header">
-      <h2>Nieuwe Route Maken</h2>
+      <h2>Edit Route</h2>
       <button class="admin-button admin-button-end" @click="$emit('close')">Terug naar Overzicht</button>
     </div>
     <label class="admin-label">Naam</label>
     <input type="text" class="admin-input" placeholder="Naam" v-model="name">
     <label class="admin-label">Categorie</label>
     <select v-model="type" class="admin-input">
-      <option value="null">-- maak keuzen --</option>
       <option value="fietsen">
         Fietsen
       </option>
@@ -45,7 +44,7 @@
       </form>
     </div>
     <div>
-      <button class="admin-button admin-button-publish" @click="publish">Publiseer</button>
+      <button class="admin-button admin-button-publish" @click="update">Update</button>
       <p v-if="feedback" class="admin-feedback">{{ feedback }}</p>
     </div>
   </div>
@@ -61,7 +60,10 @@ import turf from '@turf/length'
 import { routesCollection, routeDataCollection, isOranjenassau } from '../../global'
 
 export default {
-  name: 'Route',
+  name: 'EditRoute',
+  props: {
+    route: Object
+  },
   data() {
     return {
       name: '',
@@ -81,6 +83,21 @@ export default {
     }
   },
   methods: {
+    setRoute() {
+      console.log(this.route)
+      this.name = this.route.name
+      this.type = this.route.type
+      this.group = this.route.group
+      // Download cover image
+      const storage = firebase.storage()
+      storage.ref(this.route.coverImage).getDownloadURL().then(result => {
+        this.coverImage = { name: this.route.coverImage, data: null, result }
+      }).catch(err => {
+        console.log(err)
+      })
+
+      // TODO: Get route-data
+    },
     selectImage(selectedFile, imageSize) {
       return new Promise((resolve, reject) => {
         const file = selectedFile.target.files[0]
@@ -143,12 +160,13 @@ export default {
         this.markerValue = ''
       }
     },
-    publish() {
+    update() {
       if (
         this.name.trim() !== '' &&
         this.type !== null &&
         this.coverImage !== null &&
-        this.coordinates.length > 0
+        this.coordinates.length > 0 &&
+        false
       ) {
         this.feedback = 'Gegevens uploaden..'
         const storage = firebase.storage().ref()
@@ -292,6 +310,9 @@ export default {
         });
       })
     }
+  },
+  created() {
+    this.setRoute()
   },
   mounted() {
     this.map = new mapbox.Map({

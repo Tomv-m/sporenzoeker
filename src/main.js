@@ -11,7 +11,7 @@ import 'firebase/auth'
 import 'firebase/storage'
 import 'firebase/firestore'
 
-mapbox.accessToken = 'pk.eyJ1Ijoidi1tdG9tIiwiYSI6ImNqcm90dGN1ejBobWY0NHJxa3NnMnY5ODkifQ.8i5ISQiZx3iRP2nUNTznJg'
+mapbox.accessToken = process.env.VUE_APP_MAPBOX_KEY
 
 Vue.component('Headful', VueHeadful)
 Vue.config.productionTip = false

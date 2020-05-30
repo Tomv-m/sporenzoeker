@@ -26,7 +26,7 @@ export const siteDesc = getSiteDesc()
 
 export const isOranjenassau = CURRENT_PROJECT === 'oranjenassau'
 
-export const routePrefix = isOranjenassau ? '/alle-acht-de-etappes' : ''
+export const homeRoute = isOranjenassau ? '/alle-acht-de-etappes' : ''
 
 // Firebase Collections
 export const routeDataCollection = isOranjenassau ? 'route-data-honp' : 'route-data'

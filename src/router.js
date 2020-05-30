@@ -2,12 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import firebase from 'firebase/app'
 
-import { routePrefix, isOranjenassau } from './global'
+import { homeRoute, isOranjenassau } from './global'
 
-import Home from './views/Home.vue'
+import RoutesHome from './views/Home.vue'
 import RouteRoutes from './views/RouteRoutes.vue'
 import RoutePage from './views/RoutePage.vue'
 import SingleMap from './views/Map.vue'
+import NotFound from '@/components/NotFound'
 
 // admin
 import Login from './views/Login.vue'
@@ -33,29 +34,33 @@ const routes = [
     component: Login
   },
   {
-    path: `${routePrefix}/`,
+    path: homeRoute,
     name: 'Home',
-    component: Home
+    component: RoutesHome
   },
   {
-    path: `${routePrefix}/:slug`,
+    path: '/:slug',
     name: 'RouteRoutes',
     component: RouteRoutes
   },
   {
-    path: `${routePrefix}/:slug/:slug2`,
+    path: '/:slug/:slug2',
     name: 'Route',
     component: RoutePage
+  },
+  {
+    path: '*',
+    name: 'NotFound',
+    component: NotFound
   }
 ]
 
 if (isOranjenassau) {
+  const HomePage = require('./views/HomeOranjenassau')
   routes.push(
-    { path: '/', redirect: `${routePrefix}` }
+    { path: '/', name: 'HomePage', component: HomePage.default }
   )
 }
-
-console.log(routes)
 
 const router = new Router({
   mode: 'history',

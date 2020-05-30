@@ -6,7 +6,7 @@ node_modules
 dist
 dist-sporenzoeker
 dist-oranjenassau
-/.firebase
+.firebase
 
 # local env files
 .env.local

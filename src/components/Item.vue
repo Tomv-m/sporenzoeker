@@ -1,7 +1,7 @@
 <template>
   <router-link
     class="route-item route-item-normal"
-    :to="`${routePrefix}/${route.id}`"
+    :to="route.id"
     :title="route.name"
   >
     <div
@@ -31,8 +31,6 @@
 <script>
 import firebase from 'firebase/app'
 
-import { routePrefix } from '../global'
-
 import FietsIcon from '@/components/icons/FietsIcon'
 import LoopIcon from '@/components/icons/LoopIcon'
 
@@ -57,7 +55,6 @@ export default {
   data() {
     return {
       coverImage: '',
-      routePrefix
     }
   },
   methods: {

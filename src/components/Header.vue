@@ -1,5 +1,5 @@
 <template>
-  <header class="main-header">
+  <header class="main-header" :class="{ 'oranjenassau': isOranjenassau }">
     <div class="wrapper">
       <router-link to="/">
         <Logo :isOranjenassau="isOranjenassau" />

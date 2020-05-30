@@ -1,40 +1,42 @@
 <template>
-  <div>
-    <h2>Nieuwe Locatie Maken</h2>
-    <label>Naam</label>
+  <div class="admin-container">
+    <div class="admin-container-header">
+      <h2>Edit Locatie</h2>
+      <button class="admin-button admin-button-end" @click="$emit('close')">Terug naar Overzicht</button>
+    </div>
+    <label class="admin-label">Naam</label>
     <input type="text" class="admin-input" placeholder="Naam" v-model="name">
-    <label>Telefoon</label>
+    <label class="admin-label">Telefoon</label>
     <input type="text" class="admin-input" id="point-input" placeholder="Telefoon nummer" v-model="phone">
-    <label>Meer info</label>
+    <label class="admin-label">Meer info</label>
     <input type="text" class="admin-input" placeholder="Website URL" v-model="site">
-    <label>Categorie</label>
-    <div class="categories">
-      <button @click="() => { category = 'Overnachten'; type = 'bed' }" class="admin-categorie-button" :class="{ 'active':  type === 'bed' }">
+    <label class="admin-label">Categorie</label>
+    <div class="admin-categories">
+      <button @click="() => { category = 'Overnachten'; type = 'bed' }" :class="{ 'active':  type === 'bed' }">
         <img src="@/assets/images/icons/bed.png" alt="Bed">
       </button>
-      <button @click="() => { category = 'Overnachten'; type = 'tent' }" class="admin-categorie-button" :class="{ 'active':  type === 'tent' }">
+      <button @click="() => { category = 'Overnachten'; type = 'tent' }" :class="{ 'active':  type === 'tent' }">
         <img src="@/assets/images/icons/tent.png" alt="Tent">
       </button>
-      <button @click="() => { category = 'Aanbod Recreatie'; type = 'klaver' }" class="admin-categorie-button" :class="{ 'active':  type === 'klaver' }">
+      <button @click="() => { category = 'Aanbod Recreatie'; type = 'klaver' }" :class="{ 'active':  type === 'klaver' }">
         <img src="@/assets/images/icons/klaver.png" alt="Klaver">
       </button>
-      <button @click="() => { category = 'Aanbod Recreatie'; type = 'ster' }" class="admin-categorie-button" :class="{ 'active':  type === 'ster' }">
+      <button @click="() => { category = 'Aanbod Recreatie'; type = 'ster' }" :class="{ 'active':  type === 'ster' }">
         <img src="@/assets/images/icons/ster.png" alt="Ster">
       </button>
-      <button @click="() => { category = 'Eten en Drinken'; type = 'bestek' }" class="admin-categorie-button" :class="{ 'active':  type === 'bestek' }">
+      <button @click="() => { category = 'Eten en Drinken'; type = 'bestek' }" :class="{ 'active':  type === 'bestek' }">
         <img src="@/assets/images/icons/bestek.png" alt="Bestek">
       </button>
     </div>
     <div>
-      <label>Adres</label>
+      <label class="admin-label">Adres</label>
       <div style="position: relative;">
         <div id="route-map"></div>
       </div>
     </div>
     <div>
-      <button @click="$emit('close')">X</button>
-      <button @click="publish">Update</button>
-      <p v-if="feedback">{{ feedback }}</p>
+      <button class="admin-button admin-button-publish" @click="update">Update</button>
+      <p class="admin-feedback" v-if="feedback">{{ feedback }}</p>
     </div>
   </div>
 </template>
@@ -45,7 +47,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import firebase from 'firebase/app'
 
 export default {
-  name: 'Location',
+  name: 'EditLocation',
   props: {
     location: Object
   },
@@ -77,7 +79,7 @@ export default {
       this.address = this.location.address
       this.coordinates = this.location.coordinates
     },
-    publish() {
+    update() {
       if (
         this.name.trim() !== '' &&
         this.address.trim() !== '' &&

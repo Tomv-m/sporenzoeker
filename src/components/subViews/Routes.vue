@@ -75,7 +75,7 @@ export default {
     },
     getImage() {
       const storage = firebase.storage()
-      const url = storage.ref(this.group.headerImage).getDownloadURL().then(url => {
+      storage.ref(this.group.headerImage).getDownloadURL().then(url => {
         this.headerImage = url
       }).catch(err => {
         console.log(err)

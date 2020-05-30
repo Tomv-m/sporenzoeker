@@ -4,7 +4,7 @@
       :title="`${siteName} | ${route ? route.name : 'Kaart'}`"
       :image="coverImage"
     />
-    <header class="main-header">
+    <header class="main-header" :class="{ 'oranjenassau': isOranjenassau }">
       <div class="wrapper">
         <button 
           class="right-content route-page-button route-page-info"
@@ -18,7 +18,7 @@
       <div class="wrapper">
         <div class="route-page-actions">
           <router-link
-            :to="prevRoute ? prevRoute : '/'"
+            :to="prevRoute ? prevRoute : homeRoute"
             class="route-page-button"
           >
             {{ route ? 'Terug naar routes' : 'Naar Home pagina' }}
@@ -98,7 +98,7 @@ import firebase from 'firebase/app'
 import mapbox from 'mapbox-gl'
 import { ScaleOut as Loader } from 'vue-loading-spinner'
 
-import { isOranjenassau, siteName } from '../../global'
+import { isOranjenassau, siteName, homeRoute } from '../../global'
 
 import FietsIcon from '@/components/icons/FietsIcon'
 import LoopIcon from '@/components/icons/LoopIcon'
@@ -152,7 +152,9 @@ export default {
         { img: bed, name: 'bed' },
         { img: tent, name: 'tent' },
       ],
-      siteName
+      siteName,
+      homeRoute,
+      isOranjenassau
     }
   },
   methods: {
@@ -193,8 +195,8 @@ export default {
       }, new mapbox.LngLatBounds(coordinates[0], coordinates[0]))
       this.map.fitBounds(bounds, { padding: 40 })
     },
-    setBikePoints(bikePoints) {
-      bikePoints.forEach(point => {
+    setRoutePoints(routePoints) {
+      routePoints.forEach(point => {
         let el = document.createElement('div');
         el.className = isOranjenassau ? 'route-point hex' : 'route-point'
         el.innerHTML = point.name
@@ -230,21 +232,31 @@ export default {
       }
     },
     setLocations(locations) {
-      this.iconImages.forEach(img => this.addImage(img))
-      this.map.addSource('places', {
+      
+      this.map.addSource('locations', {
         type: 'geojson',
         data: this.convertLocationsToGeojson(locations)
       })
-      this.map.addLayer({
-        id: 'icons',
-        type: 'symbol',
-        source: 'places',
-        layout: {
-          'icon-image': '{icon}',
-          'icon-size': 0.25,
-          'icon-allow-overlap': false
-        }
+      
+      this.iconImages.forEach((icon, index) => {
+        this.map.loadImage(icon.img, (err, image) => {
+          if (err) throw err
+          this.map.addImage(icon.name, image)
+          if (index === this.iconImages.length -1) {
+            this.map.addLayer({
+              id: 'icons',
+              type: 'symbol',
+              source: 'locations',
+              layout: {
+                'icon-image': '{icon}',
+                'icon-size': 0.25,
+                'icon-allow-overlap': false
+              }
+            })
+          }
+        })
       })
+
       this.map.on('mouseenter', 'icons', () => {
         this.map.getCanvas().style.cursor = 'pointer';
       })
@@ -294,8 +306,8 @@ export default {
         if (doc.exists) {
           const data = doc.data()
           this.setRoute(data.coordinates)
-          if (data.bikePoints.length > 0) {
-            this.setBikePoints(data.bikePoints)
+          if (data.routePoints.length > 0) {
+            this.setRoutePoints(data.routePoints)
           }
           this.loading = false
         }
@@ -338,7 +350,6 @@ export default {
     })
     this.map.on('load', () => {
       if (this.route) {
-      console.log(this.route)
         this.getRouteData()
       }
       this.getLocations()

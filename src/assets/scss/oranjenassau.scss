@@ -1,0 +1,22 @@
+.oranjenassau {
+  &-home {
+    background-image: url('./assets/images/oranjenassau/home-bg.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+  }
+  &-image-wrapper {
+    width: 800px;
+    max-width: 100%;
+    img {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 22px
+    }
+  }
+}

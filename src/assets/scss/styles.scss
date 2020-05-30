@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'admin';
+@import 'oranjenassau';
 
 ::-moz-selection {
   background: $accent-light-color;
@@ -97,6 +98,9 @@ input {
 .main {
   &-header {
     margin-top: 72px;
+    &.oranjenassau {
+      margin-top: 54px;
+    }
     .wrapper {
       display: flex;
       align-items: center;
@@ -425,6 +429,10 @@ input {
   }
 }
 .route-point {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background: $white;
   width: 26px;
   height: 26px;
@@ -435,7 +443,6 @@ input {
   border-radius: 50%;
   border: 3.5px solid $accent-color;
   color: $accent-color;
-  padding: 0 1px 1px 0;
   &.hex {
     font-weight: 500;
     width: 28px;

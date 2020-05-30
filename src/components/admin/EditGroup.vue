@@ -1,7 +1,7 @@
 <template>
   <div class="admin-container">
     <div class="admin-container-header">
-      <h2>Nieuwe Groep Maken</h2>
+      <h2>Edit Groep</h2>
       <button class="admin-button admin-button-end" @click="$emit('close')">Terug naar Overzicht</button>
     </div>
     <label class="admin-label">Naam</label>
@@ -9,8 +9,7 @@
     <label class="admin-label">Onder Title</label>
     <input type="text" class="admin-input" placeholder="Onder Title" v-model="subtitle">
     <label class="admin-label">Type</label>
-    <select v-model="type" class="admin-input">
-      <option value="null">-- maak keuzen --</option>
+    <select v-model="type" class="admin-input" disabled>
       <option value="fietsen">
         Fietsen
       </option>
@@ -36,7 +35,7 @@
       <p v-if="coverFeedback" class="admin-feedback">{{ coverFeedback }}</p>
       <p v-else-if="headerImageName !== ''" class="admin-feedback admin-feedback-dark">{{coverImageName}}</p>
     </div>
-    <button class="admin-button admin-button-publish" @click="publish">Publiseer</button>
+    <button class="admin-button admin-button-publish" @click="update">Update</button>
     <p v-if="feedback" class="admin-feedback">{{ feedback }}</p>
   </div>
 </template>
@@ -49,7 +48,10 @@ import slugify from 'slugify'
 import { routesCollection } from '../../global'
 
 export default {
-  name: 'Group',
+  name: 'EditGroup',
+  props: {
+    group: Object
+  },
   data() {
     return {
       name: '',
@@ -66,6 +68,24 @@ export default {
     }
   },
   methods: {
+    setGroup() {
+      this.name = this.group.name
+      this.subtitle = this.group.subtitle
+      this.type = this.group.type
+      // Download header image
+      const storage = firebase.storage()
+      storage.ref(this.group.headerImage).getDownloadURL().then(result => {
+        this.headerImage = { name: this.group.headerImage, data: null, result }
+      }).catch(err => {
+        console.log(err)
+      })
+      // Download cover image
+      storage.ref(this.group.coverImage).getDownloadURL().then(result => {
+        this.coverImage = { name: this.group.coverImage, data: null, result }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     selectImage(selectedFile, imageSize) {
       return new Promise((resolve, reject) => {
         const file = selectedFile.target.files[0]
@@ -102,7 +122,7 @@ export default {
     },
     selectCoverImage(e) {
       this.coverFeedback = null
-      if (e.target.files[0]) {
+      if (e.target.files[0]) { 
         this.selectImage(e, { h: 100, w: 100 }).then(image => {
           this.coverImageName = image.data.name
           this.coverImage = image
@@ -111,42 +131,70 @@ export default {
         })
       }
     },
-    publish() {
+    update() {
       if (
         this.name.trim() !== '' &&
         this.subtitle.trim() !== '' &&
-        this.type !== null &&
-        this.headerImage !== null &&
-        this.coverImage !== null
+        this.type !== null
       ) {
         this.feedback = 'Gegevens uploaden..'
         const storage = firebase.storage().ref()
-        const uploadHeader = storage.child('header/' + this.headerImage.name).put(this.headerImage.data)
-        const uploadCover = storage.child('cover/' + this.coverImage.name).put(this.coverImage.data)
-        Promise.all([uploadHeader, uploadCover]).then(values => {
-          const headerPath = values[0].metadata.fullPath
-          const coverPath = values[1].metadata.fullPath
-          const group = {
-            name: this.name,
-            subtitle: this.subtitle,
-            type: this.type,
-            headerImage: headerPath,
-            coverImage: coverPath,
-            data: null,
-            group: null
-          }
-          firebase.firestore().collection(routesCollection).doc(slugify(this.name.toLowerCase())).set(group).then(doc => {
-            this.feedback = null
-            this.$emit('close')
+        if (this.headerImage.data !== null && this.coverImage.data !== null) {
+          // Delete current images
+          storage.child(this.group.headerImage).delete()
+          storage.child(this.group.coverImage).delete()
+          // upload all new images
+          const uploadHeader = storage.child('header/' + this.headerImage.name).put(this.headerImage.data)
+          const uploadCover = storage.child('cover/' + this.coverImage.name).put(this.coverImage.data)
+          Promise.all([uploadHeader, uploadCover]).then(values => {
+            const headerPath = values[0].metadata.fullPath
+            const coverPath = values[1].metadata.fullPath
+            this.updateDocument(headerPath, coverPath)
+          }).catch(err => {
+            console.log(err)
+            this.feedback = 'Uploading mislukt.. Probeer opnieuw'
           })
-        }).catch(err => {
-          console.log(err)
-          this.feedback = 'Uploading mislukt.. Probeer opnieuw'
-        })
+        } else if (this.headerImage.data !== null) {
+          // Delete current image
+          storage.child(this.group.headerImage).delete()
+          // Upload new image
+          storage.child('header/' + this.headerImage.name).put(this.headerImage.data).then(img => {
+            this.updateDocument(img.metadata.fullPath, this.group.coverImage)
+          })
+        } else if (this.coverImage.data !== null) {
+          // Delete current image
+          storage.child(this.group.coverImage).delete()
+          // Upload new image
+          storage.child('cover/' + this.coverImage.name).put(this.headerImage.data).then(img => {
+            this.updateDocument(this.group.headerImage, img.metadata.fullPath)
+          })
+        } else {
+          this.updateDocument(this.group.headerImage, this.group.coverImage)
+        }
       } else {
         this.feedback = 'Eerst alle velden invullen'
       }
+    },
+    updateDocument(headerPath, coverPath) {
+      const group = {
+        name: this.name,
+        subtitle: this.subtitle,
+        type: this.type,
+        headerImage: headerPath,
+        coverImage: coverPath,
+        data: null,
+        group: null
+      }
+      firebase.firestore().collection(routesCollection).doc(this.group.id).set(group).then(doc => {
+        this.feedback = null
+        this.$emit('close')
+      }).catch(err => {
+        this.feedback = 'Uploading mislukt.. Probeer opnieuw'
+      })
     }
+  },
+  created() {
+    this.setGroup()
   }
 }
 </script>

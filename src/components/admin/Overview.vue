@@ -1,13 +1,13 @@
 <template>
-  <div v-if="edit">
-    <EditLocation :location="edit" @close="closeEdit()" />
-  </div>
-  <div v-else>
+  <div>
     <h2>Overzicht</h2>
     <div class="admin-container">
-      <h3>Groepen</h3>
+      <div class="admin-container-header">
+        <h3>Groepen</h3>
+        <button class="admin-button admin-button-end" @click="$emit('open', { state: 'new-group' })">Nieuwe Group</button>
+      </div>
       <VueGoodTable
-        :columns="[{ label: 'Naam', field: 'name' }, { label: 'Onder title', field: 'subtitle' }, { label: 'Type', field: 'type' }, { label: 'Verwijder', field: 'remove', sortable: false }]"
+        :columns="[{ label: 'Naam', field: 'name' }, { label: 'Onder title', field: 'subtitle' }, { label: 'Type', field: 'type' }, { label: 'Bewerk', field: 'edit', sortable: false }, { label: 'Verwijder', field: 'remove', sortable: false }]"
         :rows="groups"
         :search-options="{ enabled: true }"
         :pagination-options="{ enabled: true }"
@@ -15,15 +15,21 @@
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field === 'remove'">
-            <button class="admin-remove-btn" @click="deleteGroup(props.row)">Delete</button>
+            <button class="admin-button admin-button-danger" @click="deleteGroup(props.row)">Delete</button>
+          </span>
+          <span v-else-if="props.column.field === 'edit'">
+            <button class="admin-button" @click="$emit('open', { state: 'edit-group', payload: props.row })">Edit</button>
           </span>
         </template>
       </VueGoodTable>
     </div>
     <div class="admin-container">
-      <h3>Routes</h3>
+      <div class="admin-container-header">
+        <h3>Routes</h3>
+        <button class="admin-button admin-button-end" @click="$emit('open', { state: 'new-route' })">Nieuwe Route</button>
+      </div>
       <VueGoodTable
-        :columns="[{ label: 'Naam', field: 'name' }, { label: 'Group', field: 'group' }, { label: 'Afstand', field: 'distance' }, { label: 'Type', field: 'type' }, { label: 'Verwijder', field: 'remove', sortable: false }]"
+        :columns="[{ label: 'Naam', field: 'name' }, { label: 'Group', field: 'group' }, { label: 'Afstand', field: 'distance' }, { label: 'Type', field: 'type' }, { label: 'Bewerk', field: 'edit', sortable: false }, { label: 'Verwijder', field: 'remove', sortable: false }]"
         :rows="routes"
         :search-options="{ enabled: true }"
         :pagination-options="{ enabled: true }"
@@ -34,15 +40,21 @@
             {{ parseFloat(props.row.distance).toFixed(2) }} km
           </span>
           <span v-else-if="props.column.field === 'remove'">
-            <button class="admin-remove-btn" @click="deleteRoute(props.row)">Delete</button>
+            <button class="admin-button admin-button-danger" @click="deleteRoute(props.row)">Delete</button>
+          </span>
+          <span v-else-if="props.column.field === 'edit'">
+            <button class="admin-button" @click="$emit('open', { state: 'edit-route', payload: props.row })">Edit</button>
           </span>
         </template>
       </VueGoodTable>
     </div>
     <div class="admin-container">
-      <h3>Locaties</h3>
+      <div class="admin-container-header">
+        <h3>Locaties</h3>
+        <button class="admin-button admin-button-end" @click="$emit('open', { state: 'new-location' })">Nieuwe Locatie</button>
+      </div>
       <VueGoodTable
-        :columns="[{ label: 'Naam', field: 'name' }, { label: 'Categorie', field: 'category' }, { label: 'Icon', field: 'type' }, { label: 'Verwijder', field: 'remove', sortable: false }, { label: 'Bewerk', field: 'edit', sortable: false }]"
+        :columns="[{ label: 'Naam', field: 'name' }, { label: 'Categorie', field: 'category' }, { label: 'Icon', field: 'type' }, { label: 'Bewerk', field: 'edit', sortable: false }, { label: 'Verwijder', field: 'remove', sortable: false }]"
         :rows="locations"
         :search-options="{ enabled: true }"
         :pagination-options="{ enabled: true }"
@@ -50,10 +62,10 @@
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field === 'remove'">
-            <button class="admin-remove-btn" @click="deleteLocation(props.row)">Delete</button>
+            <button class="admin-button admin-button-danger" @click="deleteLocation(props.row)">Delete</button>
           </span>
           <span v-else-if="props.column.field === 'edit'">
-            <button @click="editLocation(props.row)">Edit</button>
+            <button class="admin-button" @click="$emit('open', { state: 'edit-location', payload: props.row })">Edit</button>
           </span>
         </template>
       </VueGoodTable>
@@ -67,22 +79,18 @@ import 'vue-good-table/dist/vue-good-table.css'
 import firebase from 'firebase/app'
 import { VueGoodTable } from 'vue-good-table';
 
-import EditLocation from './EditLocation'
-
 import { routesCollection } from '../../global'
 
 export default {
   name: 'Overview',
   components: {
-    EditLocation,
     VueGoodTable
   },
   data() {
     return {
       groups: [],
       routes: [],
-      locations: [],
-      edit: null
+      locations: []
     }
   },
   methods: {
@@ -158,9 +166,6 @@ export default {
         console.log(err)
       })
     },
-    editLocation(location) {
-      this.edit = location
-    }
   },
   created() {
     this.getGroups()
@@ -169,7 +174,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

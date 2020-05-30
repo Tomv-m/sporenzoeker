@@ -1,11 +1,13 @@
 <template>
-  <div class="login-wrapper">
-    <form class="login" @submit.prevent="login">
-      <input class="admin-input" placeholder="E-Mail" type="text" v-model="email">
-      <input class="admin-input" placeholder="Wachtwoord" type="password" v-model="password">
-      <button>Login</button>
-      <p v-if="feedback" class="login-feedback">{{ feedback }}</p>
-    </form>
+  <div class="admin-login">
+    <div class="admin-login-wrapper">
+      <form @submit.prevent="login">
+        <input class="admin-input" placeholder="E-Mail" type="text" v-model="email">
+        <input class="admin-input" placeholder="Wachtwoord" type="password" v-model="password">
+        <p v-if="feedback" class="admin-feedback">{{ feedback }}</p>
+        <button class="admin-button">Login</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -37,7 +39,7 @@ export default {
           this.$router.replace({ name: 'Admin' })
         })
         .catch(() => {
-          this.feedback = 'Dat is dus niet goed he!'
+          this.feedback = 'Missien toch het andere wachtwoord?'
           this.password = ''
         })
         this.feedback = null
