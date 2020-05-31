@@ -44,8 +44,6 @@
         <p class="admin-feedback admin-feedback-dark">Verwijder een punt door er dubbel op te klikken</p>
       </form>
     </div>
-    <textarea v-model="routeInput">
-    </textarea>
     <div>
       <button class="admin-button admin-button-publish" @click="update">Update</button>
       <p v-if="feedback" class="admin-feedback">{{ feedback }}</p>
@@ -82,8 +80,7 @@ export default {
       feedback: null,
       coverImageName: '',
       markerValue: '',
-      markers: [],
-      routeInput: ''
+      markers: []
     }
   },
   computed: {
@@ -241,8 +238,7 @@ export default {
       }
       
       const routePoints = this.markers.map(marker => { return { name: marker.name, lng: marker.coordinates.lng, lat: marker.coordinates.lat } })
-      let routeData = { routePoints }
-      if (this.route.bikePoints) routeData = { routePoints, bikePoints: null }
+      const routeData = { routePoints, bikePoints: null }
 
       const uploadRouteData = db.doc(this.route.data).update(routeData)
       const uploadRoute = db.collection(routesCollection).doc(this.route.id).update(route)
