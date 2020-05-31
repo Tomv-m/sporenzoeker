@@ -6,6 +6,7 @@
     </div>
     <label class="admin-label">Naam</label>
     <input type="text" class="admin-input" placeholder="Naam" v-model="name">
+    <p v-if="slug" class="admin-feedback admin-feedback-dark">/{{ slug }}</p>
     <label class="admin-label">Onder Title</label>
     <input type="text" class="admin-input" placeholder="Onder Title" v-model="subtitle">
     <label class="admin-label">Type</label>
@@ -60,6 +61,7 @@ export default {
       headerImage: null,
       coverImage: null,
       type: null,
+      slug: null,
       feedback: null,
       headerFeedback: null,
       coverFeedback: null,
@@ -72,6 +74,7 @@ export default {
       this.name = this.group.name
       this.subtitle = this.group.subtitle
       this.type = this.group.type
+      this.slug = this.group.slug
       // Download header image
       const storage = firebase.storage()
       storage.ref(this.group.headerImage).getDownloadURL().then(result => {
@@ -182,10 +185,8 @@ export default {
         type: this.type,
         headerImage: headerPath,
         coverImage: coverPath,
-        data: null,
-        group: null
       }
-      firebase.firestore().collection(routesCollection).doc(this.group.id).set(group).then(doc => {
+      firebase.firestore().collection(routesCollection).doc(this.group.id).update(group).then(() => {
         this.feedback = null
         this.$emit('close')
       }).catch(err => {

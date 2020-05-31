@@ -108,6 +108,7 @@ export default {
         snapshot.forEach(doc => {
           routes.push({ id: doc.id, ...doc.data() })
         })
+        routes.sort((x, y) => x.order - y.order)
         this.routes = routes
         this.loading = false
       })

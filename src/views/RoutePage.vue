@@ -35,14 +35,19 @@ export default {
   },
   methods: {
     getRoute() {
-      firebase.firestore().collection(routesCollection).doc(this.$route.params.slug2.toLowerCase()).get().then(doc => {
-        const data = doc.data()
-        if (doc.exists && data.group === this.$route.params.slug.toLowerCase()) {
-          this.route = { id: doc.id, ...data }
+      const slug = this.$route.params.slug.toLowerCase()
+      const slug2 = this.$route.params.slug2.toLowerCase()
+      firebase.firestore().collection(routesCollection).where('group', '==', slug).where('slug', '==', slug2).get().then(snapshot => {
+        if (!snapshot.empty) {
+          const doc = snapshot.docs[0]
+          this.route = { id: doc.id, ...doc.data() }
         } else {
           this.routeFound = false
         }
         this.loading = false
+      }).catch(err => {
+        this.loading = false
+        this.routeFound = false
       })
     }
   },

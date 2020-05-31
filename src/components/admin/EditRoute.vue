@@ -6,6 +6,7 @@
     </div>
     <label class="admin-label">Naam</label>
     <input type="text" class="admin-input" placeholder="Naam" v-model="name">
+    <p v-if="slug" class="admin-feedback admin-feedback-dark">/{{ slug }}</p>
     <label class="admin-label">Categorie</label>
     <select v-model="type" class="admin-input">
       <option value="fietsen">
@@ -30,7 +31,7 @@
       <p v-else-if="coverImageName !== ''" class="admin-feedback admin-feedback-dark">{{coverImageName}}</p>
     </div>
     <div>
-      <label class="admin-label">Maak route</label>
+      <label class="admin-label">Route</label>
       <div style="position: relative;">
         <div id="route-map"></div>
         <div class="distance-container">{{ parseFloat(distance).toFixed(2) }} km</div>
@@ -43,6 +44,8 @@
         <p class="admin-feedback admin-feedback-dark">Verwijder een punt door er dubbel op te klikken</p>
       </form>
     </div>
+    <textarea v-model="routeInput">
+    </textarea>
     <div>
       <button class="admin-button admin-button-publish" @click="update">Update</button>
       <p v-if="feedback" class="admin-feedback">{{ feedback }}</p>
@@ -79,12 +82,17 @@ export default {
       feedback: null,
       coverImageName: '',
       markerValue: '',
-      markers: []
+      markers: [],
+      routeInput: ''
+    }
+  },
+  computed: {
+    slug () {
+      return this.name.trim() !== '' ? slugify(this.name.toLowerCase()) : null
     }
   },
   methods: {
     setRoute() {
-      console.log(this.route)
       this.name = this.route.name
       this.type = this.route.type
       this.group = this.route.group
@@ -96,7 +104,48 @@ export default {
         console.log(err)
       })
 
-      // TODO: Get route-data
+      this.getRouteData()
+    },
+    getRouteData() {
+      firebase.firestore().doc(this.route.data).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data()
+          this.coordinates = data.coordinates.map(item => [item.lng, item.lat])
+          this.setupMap()
+          const routePoints = data.routePoints ? data.routePoints : data.bikePoints
+          if (routePoints.length > 0) {
+            this.setRoutePoints(routePoints)
+          }
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    setRoutePoints(points) {
+      points.forEach(point => {
+        const el = document.createElement('div')
+        el.className = isOranjenassau ? 'route-point hex' : 'route-point'
+        el.innerHTML = point.name
+
+        const markerId = uuid()
+        const marker = new mapbox.Marker({ draggable: true, element: el })
+          .setLngLat([point.lng, point.lat])
+          .addTo(this.map)
+
+        el.addEventListener('dblclick', () => {
+          const markerIndex = this.markers.findIndex(marker => marker.id === markerId)
+          this.markers.splice(markerIndex, 1)
+          marker.remove()
+        })
+
+        marker.on('dragend', () => {
+          const markerIndex = this.markers.findIndex(marker => marker.id === markerId)
+          const newCoordinates = marker.getLngLat()
+          this.markers[markerIndex].coordinates = newCoordinates
+        })
+
+        this.markers.push({id: markerId, name: point.name, coordinates: marker.getLngLat(), marker })
+      })
     },
     selectImage(selectedFile, imageSize) {
       return new Promise((resolve, reject) => {
@@ -134,7 +183,7 @@ export default {
     },
     addMarker() {
       if (this.markerValue.trim() !== '') {
-        const el = document.createElement('div');
+        const el = document.createElement('div')
         el.className = isOranjenassau ? 'route-point hex' : 'route-point'
         el.innerHTML = this.markerValue
 
@@ -163,135 +212,78 @@ export default {
     update() {
       if (
         this.name.trim() !== '' &&
-        this.type !== null &&
-        this.coverImage !== null &&
-        this.coordinates.length > 0 &&
-        false
+        this.type !== null
       ) {
         this.feedback = 'Gegevens uploaden..'
         const storage = firebase.storage().ref()
-        const db = firebase.firestore()
-
-        const routePoints = this.markers.map(marker => { return { name: marker.name, lng: marker.coordinates.lng, lat: marker.coordinates.lat } })
-        const coordinates = this.coordinates.map(coordinates => { return { lng: coordinates[0], lat: coordinates[1]  } })
-        const uploadCover = storage.child('cover/' + this.coverImage.name).put(this.coverImage.data)
-        const uploadData = db.collection(routeDataCollection).add({ routePoints, coordinates })
-        Promise.all([uploadCover, uploadData]).then(values => {
-          const coverPath = values[0].metadata.fullPath
-          const dataPath = values[1].path
-          const route = {
-            name: this.name,
-            distance: this.distance,
-            type: this.type,
-            group: this.group === 'null' ? null : this.group,
-            coverImage: coverPath,
-            data: dataPath
-          }
-          db.collection(routesCollection).doc(slugify(this.name.toLowerCase())).set(route).then(doc => {
-            this.feedback = null
-            this.$emit('close')
+        if (this.coverImage.data !== null) {
+          storage.child(this.route.coverImage).delete()
+          // Upload new image
+          storage.child('cover/' + this.coverImage.name).put(this.coverImage.data).then(img => {
+            this.updateDocuments(img.metadata.fullPath)
           })
-        }).catch(err => {
-          console.log(err)
-          this.feedback = 'Uploading mislukt.. Probeer opnieuw'
-        })
+        } else {
+          this.updateDocuments(this.route.coverImage)
+        }
       } else {
         this.feedback = 'Eerst alle velden invullen'
       }
     },
+    updateDocuments(coverPath) {
+      const db = firebase.firestore()
+
+      const route = {
+        slug: this.slug,
+        name: this.name,
+        type: this.type,
+        group: this.group === 'null' ? null : this.group,
+        coverImage: coverPath
+      }
+      
+      const routePoints = this.markers.map(marker => { return { name: marker.name, lng: marker.coordinates.lng, lat: marker.coordinates.lat } })
+      let routeData = { routePoints }
+      if (this.route.bikePoints) routeData = { routePoints, bikePoints: null }
+
+      const uploadRouteData = db.doc(this.route.data).update(routeData)
+      const uploadRoute = db.collection(routesCollection).doc(this.route.id).update(route)
+
+      Promise.all([uploadRouteData, uploadRoute]).then(() => {
+        this.feedback = null
+        this.$emit('close')
+      }).catch(err => {
+        this.feedback = 'Uploading mislukt.. Probeer opnieuw'
+      })
+    },
     setupMap () {
-      let geojson = {
-        type: 'FeatureCollection',
-        features: []
-      }
+      const coordinates = this.coordinates
 
-      let linestring = {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: []
-        }
-      }
-
-      this.map.addSource('geojson', {
-        type: 'geojson',
-        data: geojson
-      })
+      const bounds = coordinates.reduce((bounds, coord) => {
+        return bounds.extend(coord)
+      }, new mapbox.LngLatBounds(coordinates[0], coordinates[0]))
+      this.map.fitBounds(bounds, { padding: 40, duration: 0 })
 
       this.map.addLayer({
-        id: 'measure-points',
-        type: 'circle',
-        source: 'geojson',
-        paint: {
-          'circle-radius': 5,
-          'circle-color': '#008D36'
-        },
-        filter: ['in', '$type', 'Point']
-      })
-
-      this.map.addLayer({
-        id: 'measure-lines',
-        type: 'line',
-        source: 'geojson',
-        layout: {
-          'line-cap': 'round',
-          'line-join': 'round'
-        },
-        paint: {
-          'line-color': '#008D36',
-          'line-width': 3
-        },
-        filter: ['in', '$type', 'LineString']
-      })
-
-      this.map.on('click', e => {  
-        const features = this.map.queryRenderedFeatures(e.point, {
-          layers: ['measure-points']
-        })
-
-        if (geojson.features.length > 1) geojson.features.pop()
-
-        if (features.length) {
-          const id = features[0].properties.id
-          geojson.features = geojson.features.filter(point => {
-            return point.properties.id !== id
-          })
-        } else {
-          const point = {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [e.lngLat.lng, e.lngLat.lat]
-            },
-            properties: {
-              id: uuid()
+        "id": "route",
+        "type": "line",
+        "source": {
+          "type": "geojson",
+          "data": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "LineString",
+              "coordinates": coordinates
             }
           }
-
-          geojson.features.push(point)
+        },
+        "layout": {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        "paint": {
+          "line-color": "#008D36",
+          "line-width": 6
         }
-
-        if (geojson.features.length > 1) {
-          linestring.geometry.coordinates = geojson.features.map(point => {
-            return point.geometry.coordinates
-          })
-
-          geojson.features.push(linestring)
-
-          this.distance = turf(linestring)
-          
-          this.coordinates = linestring.geometry.coordinates
-        }
-
-        this.map.getSource('geojson').setData(geojson)
-      })
-
-      this.map.on('mousemove', e => {
-        const features = this.map.queryRenderedFeatures(e.point, {
-          layers: ['measure-points']
-        })
-
-        this.map.getCanvas().style.cursor = features.length ? 'pointer' : 'crosshair'
       })
     },
     setInputFilter(textbox, inputFilter) {
@@ -321,10 +313,6 @@ export default {
       attributionControl: false,
       center: [4.9443857, 51.5416528],
       zoom: 10
-    })
-    
-    this.map.on('load', () => {
-      this.setupMap()
     })
 
     this.setInputFilter(document.getElementById('marker-input'), value => /^\d*$/.test(value))

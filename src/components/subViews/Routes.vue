@@ -67,7 +67,8 @@ export default {
       routesRef.get().then(snapshot => {
         let routes = []
         snapshot.forEach(doc => {
-          routes.push({ id: `${this.group.id}/${doc.id}`, ...doc.data() })
+          const { slug } = doc.data()
+          routes.push({ id: doc.id, ...doc.data(), slug: `${this.group.slug}/${slug}` })
         })
         this.routes = routes
         this.loading = false

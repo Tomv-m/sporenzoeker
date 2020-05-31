@@ -1,7 +1,7 @@
 <template>
   <router-link
     class="route-item route-item-normal"
-    :to="route.id"
+    :to="route.slug"
     :title="route.name"
   >
     <div

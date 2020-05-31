@@ -6,6 +6,7 @@
     </div>
     <label class="admin-label">Naam</label>
     <input type="text" class="admin-input" placeholder="Naam" v-model="name">
+    <p v-if="slug" class="admin-feedback admin-feedback-dark">/{{ slug }}</p>
     <label class="admin-label">Categorie</label>
     <select v-model="type" class="admin-input">
       <option value="null">-- maak keuzen --</option>
@@ -19,7 +20,7 @@
     <label class="admin-label">In groep plaatsen</label>
     <select class="admin-input" :disabled="type === null || type === 'null' && groups.lenght !== 0" v-model="group">
       <option value="null">Niet in groep</option>
-      <option v-for="group in groups" :value="group.id" :key="group.id">{{group.name}}</option>
+      <option v-for="group in groups" :value="group.slug" :key="group.id">{{group.name}}</option>
     </select>
     <div>
       <label class="admin-label">Cover Afbeelding <span>100 x 100</span></label>
@@ -31,7 +32,7 @@
       <p v-else-if="coverImageName !== ''" class="admin-feedback admin-feedback-dark">{{coverImageName}}</p>
     </div>
     <div>
-      <label class="admin-label">Maak route</label>
+      <label class="admin-label">Route</label>
       <div style="position: relative;">
         <div id="route-map"></div>
         <div class="distance-container">{{ parseFloat(distance).toFixed(2) }} km</div>
@@ -80,6 +81,11 @@ export default {
       markers: []
     }
   },
+  computed: {
+    slug () {
+      return this.name.trim() !== '' ? slugify(this.name.toLowerCase()) : null
+    }
+  },
   methods: {
     selectImage(selectedFile, imageSize) {
       return new Promise((resolve, reject) => {
@@ -117,7 +123,7 @@ export default {
     },
     addMarker() {
       if (this.markerValue.trim() !== '') {
-        const el = document.createElement('div');
+        const el = document.createElement('div')
         el.className = isOranjenassau ? 'route-point hex' : 'route-point'
         el.innerHTML = this.markerValue
 
@@ -162,6 +168,7 @@ export default {
           const coverPath = values[0].metadata.fullPath
           const dataPath = values[1].path
           const route = {
+            slug: this.slug,
             name: this.name,
             distance: this.distance,
             type: this.type,
@@ -169,7 +176,7 @@ export default {
             coverImage: coverPath,
             data: dataPath
           }
-          db.collection(routesCollection).doc(slugify(this.name.toLowerCase())).set(route).then(doc => {
+          db.collection(routesCollection).doc(this.slug).set(route).then(doc => {
             this.feedback = null
             this.$emit('close')
           })

@@ -41,14 +41,23 @@ export default {
   },
   methods: {
     getRouteRoutes() {
-      firebase.firestore().collection(routesCollection).doc(this.$route.params.slug.toLowerCase()).get().then(doc => {
-        const data = doc.data()
-        if (doc.exists && data.group === null) {
-          this.route = { id: doc.id, ...data }
+      const slug = this.$route.params.slug.toLowerCase()
+      firebase.firestore().collection(routesCollection).where('slug', '==', slug).get().then(snapshot => {
+        this.loading = false
+        if (!snapshot.empty) {
+          const doc = snapshot.docs[0]
+          const data = doc.data()
+          if (data.group === null) {
+            this.route = { id: doc.id, ...data }
+          } else {
+            this.routeFound = false
+          }
         } else {
           this.routeFound = false
         }
+      }).catch(err => {
         this.loading = false
+        this.routeFound = false
       })
     }
   },

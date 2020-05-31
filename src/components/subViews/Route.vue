@@ -306,8 +306,9 @@ export default {
         if (doc.exists) {
           const data = doc.data()
           this.setRoute(data.coordinates)
-          if (data.routePoints.length > 0) {
-            this.setRoutePoints(data.routePoints)
+          const routePoints = data.routePoints ? data.routePoints : data.bikePoints
+          if (routePoints.length > 0) {
+            this.setRoutePoints(routePoints)
           }
           this.loading = false
         }

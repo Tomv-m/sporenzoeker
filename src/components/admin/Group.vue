@@ -6,6 +6,7 @@
     </div>
     <label class="admin-label">Naam</label>
     <input type="text" class="admin-input" placeholder="Naam" v-model="name">
+    <p v-if="slug" class="admin-feedback admin-feedback-dark">/{{ slug }}</p>
     <label class="admin-label">Onder Title</label>
     <input type="text" class="admin-input" placeholder="Onder Title" v-model="subtitle">
     <label class="admin-label">Type</label>
@@ -63,6 +64,11 @@ export default {
       coverFeedback: null,
       headerImageName: '',
       coverImageName: ''
+    }
+  },
+  computed: {
+    slug () {
+      return this.name.trim() !== '' ? slugify(this.name.toLowerCase()) : null
     }
   },
   methods: {
@@ -127,6 +133,7 @@ export default {
           const headerPath = values[0].metadata.fullPath
           const coverPath = values[1].metadata.fullPath
           const group = {
+            slug: this.slug,
             name: this.name,
             subtitle: this.subtitle,
             type: this.type,
@@ -135,7 +142,7 @@ export default {
             data: null,
             group: null
           }
-          firebase.firestore().collection(routesCollection).doc(slugify(this.name.toLowerCase())).set(group).then(doc => {
+          firebase.firestore().collection(routesCollection).doc(this.slug).set(group).then(doc => {
             this.feedback = null
             this.$emit('close')
           })
