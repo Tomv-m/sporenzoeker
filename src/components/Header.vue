@@ -4,7 +4,7 @@
       <router-link to="/">
         <Logo :isOranjenassau="isOranjenassau" />
       </router-link> 
-      <div class="right-content">
+      <div class="right-content" v-if="!isOranjenassau">
         <slot />
       </div>
     </div>

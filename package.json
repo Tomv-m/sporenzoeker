@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "npm run serve-sporenzoeker",
-    "build": "npm run build-sporenzoeker",
+    "build": "npm run build-sporenzoeker && npm run build-oranjenassau",
     "serve-sporenzoeker": "env VUE_APP_CURRENT_PROJECT=sporenzoeker vue-cli-service serve",
     "serve-oranjenassau": "env VUE_APP_CURRENT_PROJECT=oranjenassau vue-cli-service serve",
     "build-sporenzoeker": "env VUE_APP_CURRENT_PROJECT=sporenzoeker vue-cli-service build",

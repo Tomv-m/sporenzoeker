@@ -18,7 +18,8 @@
       <div class="wrapper">
         <div class="route-page-actions">
           <router-link
-            :to="prevRoute ? prevRoute : homeRoute"
+            v-if="route"
+            :to="homeRoute"
             class="route-page-button"
           >
             {{ route ? 'Terug naar routes' : 'Naar Home pagina' }}

@@ -99,7 +99,13 @@ input {
   &-header {
     margin-top: 72px;
     &.oranjenassau {
-      margin-top: 54px;
+      margin-top: 26px;
+      .wrapper {
+        text-align: center;
+        a {
+          width: 100%;
+        }
+      }
     }
     .wrapper {
       display: flex;

@@ -6,7 +6,6 @@
     />
     <MainHeader>
       <button
-        v-if="!isOranjenassau"
         class="icon-button"
         :class="{ active: filter === 'fietsen' }"
         @click="setFilter('fietsen')"
@@ -48,7 +47,7 @@
 import firebase from 'firebase/app'
 import { ScaleOut as Loader } from 'vue-loading-spinner'
 
-import { siteName, siteDesc, isOranjenassau, routesCollection } from '../global'
+import { siteName, siteDesc, routesCollection } from '../global'
 
 import MainHeader from '@/components/Header'
 import MainFooter from '@/components/Footer'
@@ -76,8 +75,7 @@ export default {
       search: '',
       routes: [],
       siteName,
-      siteDesc,
-      isOranjenassau
+      siteDesc
     }
   },
   computed: {
