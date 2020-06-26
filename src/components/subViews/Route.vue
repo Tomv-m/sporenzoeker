@@ -207,18 +207,10 @@ export default {
       })
     },
     locateUser() {
-      window.navigator.geolocation.getCurrentPosition(pos => {
-        this.userPosition = [pos.coords.longitude, pos.coords.latitude]
-        this.showUserPoint()
-        this.map.flyTo({
-          center: this.userPosition,
-          zoom: 14,
-          essential: true
-        })
-      }, err => {
-        if (err.code == err.PERMISSION_DENIED) {
-          this.showUserLocationBtn = false
-        }
+      this.map.flyTo({
+        center: this.userPosition,
+        zoom: 14,
+        essential: true
       })
     },
     showUserPoint() {
@@ -359,16 +351,14 @@ export default {
 
     // setup user location
     if (window.navigator.geolocation) {
-      
-      window.navigator.geolocation.getCurrentPosition(pos => {
+      // watch user location
+      window.navigator.geolocation.watchPosition(pos => {
         this.showUserLocationBtn = true
         this.userPosition = [pos.coords.longitude, pos.coords.latitude]
         this.showUserPoint()
-      }, err => {
-        if (err.code == err.PERMISSION_DENIED) {
-          this.showUserLocationBtn = false
-        }
-      })
+      }, () => {
+        this.showUserLocationBtn = false
+      }, { timeout: 60000 })
     }
   }
 }
