@@ -9,6 +9,8 @@
     "serve-oranjenassau": "env VUE_APP_CURRENT_PROJECT=oranjenassau vue-cli-service serve",
     "build-sporenzoeker": "env VUE_APP_CURRENT_PROJECT=sporenzoeker vue-cli-service build",
     "build-oranjenassau": "env VUE_APP_CURRENT_PROJECT=oranjenassau vue-cli-service build",
+    "deploy-sporenzoeker": "firebase deploy --only hosting:sporenzoeker",
+    "deploy-oranjenassau": "firebase deploy --only hosting:oranjenassau",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

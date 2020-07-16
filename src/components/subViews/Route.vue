@@ -15,10 +15,9 @@
       </div>
     </header>
     <div class="route-page-bottom">
-      <div class="wrapper">
+      <div class="wrapper" v-if="route">
         <div class="route-page-actions">
           <router-link
-            v-if="route"
             :to="homeRoute"
             class="route-page-button"
           >
@@ -32,7 +31,7 @@
             Mijn locatie
           </button>
         </div>
-        <div v-if="route" class="route-item route-item-small" :title="route.name">
+        <div class="route-item route-item-small" :title="route.name">
           <div
             class="route-item-image"
             :style="{ 'background-image': 'url(' + coverImage + ')' }"
@@ -345,6 +344,10 @@ export default {
     this.map.on('load', () => {
       if (this.route) {
         this.getRouteData()
+      } else {
+        // if on /kaart page 
+        this.map.scrollZoom.disable()
+        this.map.addControl(new mapbox.NavigationControl(), 'bottom-right')
       }
       this.getLocations()
     })
