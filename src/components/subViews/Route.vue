@@ -109,6 +109,9 @@ import bestek from '@/assets/images/icons/bestek.png';
 import klaver from '@/assets/images/icons/klaver.png';
 import bed from '@/assets/images/icons/bed.png';
 import tent from '@/assets/images/icons/tent.png';
+// Key Locations
+import beekseBergen from '@/assets/images/icons/beekse-bergen.png';
+import efteling from '@/assets/images/icons/efteling.png';
 
 export default {
   name: 'Route',
@@ -152,6 +155,10 @@ export default {
         { img: bed, name: 'bed' },
         { img: tent, name: 'tent' },
       ],
+      keyLocations: [
+        { img: efteling, coordinates: [5.043636, 51.649820]},
+        { img: beekseBergen, coordinates: [5.114222, 51.525554] }
+      ], 
       siteName,
       homeRoute,
       isOranjenassau
@@ -224,7 +231,6 @@ export default {
       }
     },
     setLocations(locations) {
-      
       this.map.addSource('locations', {
         type: 'geojson',
         data: this.convertLocationsToGeojson(locations)
@@ -259,6 +265,39 @@ export default {
         this.selectedLocation = JSON.parse(e.features[0].properties.info)
       })
     },
+    setKeyLocations() {
+      this.keyLocations.forEach(({img, coordinates}) => {
+        this.map.loadImage(img, (err, image) => {
+          if (err) throw err
+          this.map.addImage(img, image)
+          const source = {
+            'type': 'geojson',
+            'data': {
+              'type': 'FeatureCollection',
+              'features': [
+                {
+                  'type': 'Feature',
+                  'geometry': {
+                    'type': 'Point',
+                    'coordinates': coordinates
+                  }
+                }
+              ]
+            }
+          }
+          this.map.addLayer({
+            'id': img,
+            'type': 'symbol',
+            'source': source,
+            'layout': {
+              'icon-image': img,
+              'icon-size': 0.25
+            }
+          });
+        })
+      })
+      
+    },
     convertLocationsToGeojson(locations) {
       const features = locations.map(location => {
         const { address, name, phone, site, category } = location
@@ -285,13 +324,6 @@ export default {
         'type': 'FeatureCollection',
         'features': features
       }
-    },
-    addImage(image) {
-      this.map.loadImage(image.img, (err, img)  => {
-        if (!err) {
-          this.map.addImage(image.name, img)
-        }
-      })
     },
     getRouteData() {
       firebase.firestore().doc(this.route.data).get().then(doc => {
@@ -350,6 +382,7 @@ export default {
         this.map.addControl(new mapbox.NavigationControl(), 'bottom-right')
       }
       this.getLocations()
+      if (!isOranjenassau) { this.setKeyLocations() }
     })
 
     // setup user location
