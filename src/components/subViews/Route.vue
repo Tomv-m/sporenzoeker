@@ -138,7 +138,7 @@ export default {
     return {
       loading: false,
       map: null,
-      mapStyle: 'mapbox://styles/mapbox/outdoors-v10',
+      mapStyle: 'mapbox://styles/v-mtom/ckddgaaie42tu1jmwj7cbbv1f',
       attributionter: false,
       selectedLocation: null,
       userPosition: null,

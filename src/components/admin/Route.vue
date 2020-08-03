@@ -71,7 +71,7 @@ export default {
       coverImage: null,
       distance: 0,
       coordinates: [],
-      mapStyle: 'mapbox://styles/mapbox/outdoors-v10',
+      mapStyle: 'mapbox://styles/v-mtom/ckddgaaie42tu1jmwj7cbbv1f',
       groups: [],
       coverFeedback: null,
       map: null,
